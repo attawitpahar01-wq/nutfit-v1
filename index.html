@@ -17,6 +17,7 @@
         <h1 id="appBrandTitle">MyFit Coach</h1>
       </div>
       <div class="profile-pill" id="profileShortcut" role="button" tabindex="0">
+        <img id="headerAvatar" class="header-avatar" alt="Profile avatar">
         <span id="headerProfileName">User</span>
         <strong id="headerProfileAge">-</strong>
       </div>
@@ -152,6 +153,22 @@
         </div>
 
         <form id="profileForm" class="card form-card">
+          <div class="avatar-uploader">
+            <div class="avatar-preview" id="avatarPreview">
+              <span id="avatarInitial">U</span>
+              <img id="profileAvatarPreview" alt="Profile preview">
+            </div>
+            <div>
+              <h3>รูปโปรไฟล์</h3>
+              <p>อัปโหลดรูปส่วนตัวเพื่อแสดงบนแอปนี้ รูปจะเก็บไว้ในเครื่องของผู้ใช้เท่านั้น</p>
+              <div class="backup-actions">
+                <button class="secondary-button" id="chooseAvatarBtn" type="button">เลือกรูป</button>
+                <button class="secondary-button" id="removeAvatarBtn" type="button">ลบรูป</button>
+              </div>
+              <input id="avatarInput" type="file" accept="image/*" hidden>
+            </div>
+          </div>
+
           <label>
             ชื่อผู้ใช้งาน
             <input id="profileNameInput" type="text" placeholder="เช่น Nut, May, Bank" required>

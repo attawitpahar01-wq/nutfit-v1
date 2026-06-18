@@ -66,6 +66,7 @@ const feelingInput = document.querySelector("#feelingInput");
 const feelingValue = document.querySelector("#feelingValue");
 const importFileInput = document.querySelector("#importFileInput");
 const profileForm = document.querySelector("#profileForm");
+const avatarInput = document.querySelector("#avatarInput");
 const profileInputs = ["Name", "Age", "Gender", "Height", "Weight", "Goal", "Program"].reduce((acc, key) => {
   acc[key.toLowerCase()] = document.querySelector(`#profile${key}Input`);
   return acc;
@@ -151,7 +152,8 @@ profileForm.addEventListener("submit", (event) => {
     height: Number(profileInputs.height.value || 0),
     weight: Number(profileInputs.weight.value || 0),
     goal: profileInputs.goal.value,
-    program: profileInputs.program.value
+    program: profileInputs.program.value,
+    avatar: profile.avatar || ""
   };
   saveProfile();
   render();
@@ -170,6 +172,14 @@ document.querySelector("#resetPlanBtn").addEventListener("click", () => {
   savePlan();
   render();
 });
+
+document.querySelector("#chooseAvatarBtn").addEventListener("click", () => avatarInput.click());
+document.querySelector("#removeAvatarBtn").addEventListener("click", () => {
+  profile.avatar = "";
+  saveProfile();
+  render();
+});
+avatarInput.addEventListener("change", handleAvatarUpload);
 
 function loadWorkouts() {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -198,7 +208,8 @@ function loadProfile() {
     height: 0,
     weight: 0,
     goal: "เพิ่มความฟิต",
-    program: "Balanced Fitness"
+    program: "Balanced Fitness",
+    avatar: ""
   };
   const stored = localStorage.getItem(PROFILE_KEY);
   if (!stored) return fallback;
@@ -259,6 +270,50 @@ function renderProfilePreview() {
   const bmi = calculateBmi(height, weight);
   document.querySelector("#profileBmiPreview").textContent = bmi ? bmi.toFixed(1) : "-";
   document.querySelector("#profileBmiCategory").textContent = bmi ? bmiCategory(bmi) : "กรอกส่วนสูงและน้ำหนักเพื่อคำนวณ BMI";
+}
+
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    window.alert("Please choose an image file.");
+    avatarInput.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => resizeAvatar(reader.result)
+    .then((avatarData) => {
+      profile.avatar = avatarData;
+      saveProfile();
+      render();
+    })
+    .catch(() => window.alert("Cannot read this image. Please try another file."))
+    .finally(() => {
+      avatarInput.value = "";
+    });
+  reader.readAsDataURL(file);
+}
+
+function resizeAvatar(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const size = 512;
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      const sourceSize = Math.min(image.width, image.height);
+      const sourceX = (image.width - sourceSize) / 2;
+      const sourceY = (image.height - sourceSize) / 2;
+
+      canvas.width = size;
+      canvas.height = size;
+      context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
+      resolve(canvas.toDataURL("image/jpeg", 0.82));
+    };
+    image.onerror = reject;
+    image.src = dataUrl;
+  });
 }
 
 function exportWorkoutData() {
@@ -348,12 +403,27 @@ function toggleDistanceField() {
 function renderProfile() {
   const bmi = calculateBmi(profile.height, profile.weight);
   const isComplete = isProfileComplete(profile);
+  const avatar = profile.avatar || "";
   document.querySelector("#appBrandTitle").textContent = isComplete ? `${profile.name} Fit` : "MyFit Coach";
   document.querySelector("#headerProfileName").textContent = isComplete ? profile.name : "Setup";
   document.querySelector("#headerProfileAge").textContent = profile.age ? `${profile.age}` : "-";
   document.querySelector("#dashboardBmi").textContent = bmi ? `${bmi.toFixed(1)} ${bmiCategoryShort(bmi)}` : "Setup";
   document.querySelector("#dashboardProgram").textContent = profile.program || "Balanced Fitness";
   document.querySelector("#setupPrompt").classList.toggle("hidden", isComplete);
+  renderAvatar(avatar);
+}
+
+function renderAvatar(avatar) {
+  const headerAvatar = document.querySelector("#headerAvatar");
+  const profileAvatarPreview = document.querySelector("#profileAvatarPreview");
+  const avatarInitial = document.querySelector("#avatarInitial");
+  const initial = (profile.name || "User").trim().charAt(0).toUpperCase() || "U";
+
+  avatarInitial.textContent = initial;
+  [headerAvatar, profileAvatarPreview].forEach((image) => {
+    image.src = avatar || "";
+    image.classList.toggle("visible", Boolean(avatar));
+  });
 }
 
 function renderPlanEditor() {
