@@ -1,4 +1,4 @@
-const STORAGE_KEY = "nutfit_workouts_v1";
+const STORAGE_KEY = "nutfit_workouts_live_v1";
 
 const typeLabels = {
   Run: "วิ่ง",
@@ -48,14 +48,7 @@ const weeklyPlan = [
   { day: "วันอาทิตย์", short: "อา", title: "แบดมินตัน", type: "Badminton", icon: "🏸", note: "ฝึกฟุตเวิร์ก ปฏิกิริยา และความทนทาน" }
 ];
 
-const sampleWorkouts = [
-  { id: "sample-1", date: "2026-06-15", type: "Run", duration: 38, distance: 5.2, intensity: "Easy", feeling: 4, injury: "", remark: "วิ่ง Zone 2" },
-  { id: "sample-2", date: "2026-06-16", type: "Strength", duration: 45, distance: 0, intensity: "Moderate", feeling: 4, injury: "", remark: "Squat, lunge, plank" },
-  { id: "sample-3", date: "2026-06-17", type: "Football", duration: 75, distance: 0, intensity: "Hard", feeling: 5, injury: "", remark: "เตะบอลเกมเล็ก" },
-  { id: "sample-4", date: "2026-06-18", type: "Recovery", duration: 25, distance: 2.7, intensity: "Easy", feeling: 3, injury: "", remark: "วิ่งฟื้นตัวเบามาก" },
-  { id: "sample-5", date: "2026-06-20", type: "Run", duration: 62, distance: 8.4, intensity: "Moderate", feeling: 4, injury: "", remark: "Long run เพิ่มระยะ" },
-  { id: "sample-6", date: "2026-06-21", type: "Badminton", duration: 60, distance: 0, intensity: "Moderate", feeling: 4, injury: "", remark: "เล่นคู่" }
-];
+const sampleWorkouts = [];
 
 let workouts = loadWorkouts();
 
@@ -111,7 +104,7 @@ workoutForm.addEventListener("submit", (event) => {
 });
 
 document.querySelector("#resetDemoBtn").addEventListener("click", () => {
-  workouts = [...sampleWorkouts];
+  workouts = [];
   saveWorkouts();
   render();
 });
