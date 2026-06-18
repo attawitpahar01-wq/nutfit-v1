@@ -1,9 +1,9 @@
-const CACHE_NAME = "myfit-coach-cache-3";
+const CACHE_NAME = "nutfit-v2-cache-1";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./style.css",
-  "./app.js",
+  "./script.js",
   "./manifest.json",
   "./icon.svg"
 ];

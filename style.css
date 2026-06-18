@@ -413,6 +413,56 @@ h3 {
   padding: 14px;
 }
 
+.plan-recommendation {
+  border: 1px solid rgba(69, 173, 255, 0.24);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(69, 173, 255, 0.11), rgba(41, 242, 139, 0.055)),
+    rgba(255, 255, 255, 0.035);
+  box-shadow: var(--inner-glow);
+  padding: 14px;
+}
+
+.plan-recommendation span {
+  display: block;
+  color: var(--blue);
+  font-size: 0.82rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.plan-recommendation strong {
+  display: block;
+  color: var(--text);
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.plan-recommendation p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.recommendation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.recommendation-tags span {
+  width: fit-content;
+  margin: 0;
+  border: 1px solid rgba(41, 242, 139, 0.18);
+  border-radius: 999px;
+  background: rgba(41, 242, 139, 0.08);
+  color: var(--green);
+  padding: 6px 10px;
+  font-size: 0.72rem;
+}
+
 .program-info span {
   display: block;
   color: var(--green);
@@ -570,6 +620,17 @@ label {
   font-weight: 700;
 }
 
+.required-field {
+  color: var(--green);
+}
+
+.required-field textarea {
+  border-color: rgba(41, 242, 139, 0.55);
+  box-shadow:
+    var(--inner-glow),
+    0 0 0 3px rgba(41, 242, 139, 0.08);
+}
+
 input,
 select,
 textarea {
@@ -686,7 +747,7 @@ textarea {
   left: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   width: min(calc(100% - 20px), 500px);
   margin: 0 auto 10px;
   border: 1px solid rgba(220, 255, 238, 0.1);
@@ -700,6 +761,63 @@ textarea {
   padding: 10px;
 }
 
+.coach-nudge {
+  position: fixed;
+  right: max(14px, calc((100vw - 500px) / 2 + 14px));
+  bottom: 94px;
+  left: max(14px, calc((100vw - 500px) / 2 + 14px));
+  z-index: 11;
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 12px;
+  border: 1px solid rgba(41, 242, 139, 0.28);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(41, 242, 139, 0.14), rgba(69, 173, 255, 0.08)),
+    rgba(8, 19, 15, 0.96);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.48),
+    var(--inner-glow);
+  backdrop-filter: blur(20px);
+  padding: 14px 42px 14px 14px;
+}
+
+.coach-nudge-avatar {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.coach-nudge strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.coach-nudge p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.coach-nudge-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  font-size: 1rem;
+}
+
 .nav-item {
   display: grid;
   gap: 4px;
@@ -709,12 +827,12 @@ textarea {
   background: transparent;
   color: var(--muted);
   padding: 9px 2px;
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 800;
 }
 
 .nav-item span {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .nav-item.active {
@@ -744,6 +862,35 @@ textarea {
 }
 
 .easy {
+  color: var(--green);
+}
+
+.high {
+  color: var(--danger);
+}
+
+.medium {
+  color: var(--warning);
+}
+
+.low {
+  color: var(--green);
+}
+
+.status-card {
+  border-color: rgba(41, 242, 139, 0.24);
+}
+
+.status-card .badge {
+  color: var(--green);
+}
+
+.signal-item strong {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.recommendation-item strong {
   color: var(--green);
 }
 

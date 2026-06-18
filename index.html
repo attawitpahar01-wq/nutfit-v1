@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07110d">
-  <title>MyFit Coach</title>
+  <title>NutFit V2 ภาษาไทย</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
@@ -13,76 +13,100 @@
   <div class="app-shell">
     <header class="app-header">
       <div>
-        <p class="eyebrow">Personal Fitness App</p>
-        <h1 id="appBrandTitle">MyFit Coach</h1>
+        <p class="eyebrow">โค้ชฟิตเนสส่วนตัว</p>
+        <h1 id="appBrandTitle">NutFit V2</h1>
       </div>
-      <div class="profile-pill" id="profileShortcut" role="button" tabindex="0">
+      <button class="profile-pill" id="profileShortcut" type="button">
         <img id="headerAvatar" class="header-avatar" alt="Profile avatar">
-        <span id="headerProfileName">User</span>
+        <span id="headerProfileName">Setup</span>
         <strong id="headerProfileAge">-</strong>
-      </div>
+      </button>
     </header>
 
     <main>
       <section id="dashboard" class="page active" aria-labelledby="dashboard-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">This Week</p>
-            <h2 id="dashboard-title">Dashboard</h2>
+            <p class="eyebrow">สัปดาห์นี้</p>
+            <h2 id="dashboard-title">แดชบอร์ด</h2>
           </div>
-          <button class="icon-button" id="resetDemoBtn" type="button" title="Clear all workouts">↻</button>
+          <button class="icon-button" id="clearWorkoutsBtn" type="button" title="Clear all workouts">↻</button>
         </div>
 
         <div class="hero-card">
           <div>
-            <p>Training Score</p>
+            <p>คะแนนการซ้อม</p>
             <strong id="trainingScore">0</strong>
           </div>
           <div class="score-ring">
-            <span id="scoreLabel">Ready</span>
+            <span id="scoreLabel">Start</span>
           </div>
         </div>
 
         <article class="setup-card" id="setupPrompt">
           <div>
-            <p class="eyebrow">Start Here</p>
-            <h3>Set up your profile</h3>
-            <p>Add name, age, height, weight, BMI, and choose your training program.</p>
+            <p class="eyebrow">เริ่มต้นใช้งาน</p>
+            <h3>ตั้งค่าโปรไฟล์นักกีฬา</h3>
+            <p>กรอกข้อมูลนักกีฬา เป้าหมาย ระดับการวิ่ง และวันพัก ก่อนเริ่มใช้งานจริง</p>
           </div>
-          <button class="primary-button" data-page="profile" type="button">Setup Profile</button>
+          <button class="primary-button" data-page="profile" type="button">ตั้งค่าโปรไฟล์</button>
         </article>
 
         <div class="stats-grid">
           <article class="stat-card">
-            <span>Total Running</span>
+            <span>โหลดสัปดาห์นี้</span>
+            <strong id="weeklyLoad">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>สถานะโหลด</span>
+            <strong id="loadStatus">Light</strong>
+          </article>
+          <article class="stat-card">
+            <span>ระยะวิ่งรวม</span>
             <strong id="weeklyDistance">0 km</strong>
           </article>
           <article class="stat-card">
-            <span>Workouts</span>
+            <span>จำนวนครั้งที่ซ้อม</span>
             <strong id="weeklyWorkouts">0</strong>
           </article>
           <article class="stat-card">
-            <span>Duration</span>
+            <span>เวลารวม</span>
             <strong id="weeklyDuration">0 min</strong>
           </article>
           <article class="stat-card">
-            <span>Avg Feeling</span>
-            <strong id="weeklyFeeling">-</strong>
+            <span>RPE เฉลี่ย</span>
+            <strong id="averageRpe">-</strong>
           </article>
         </div>
 
+        <article class="card status-card">
+          <div class="card-title-row">
+            <h3>สถานะการฟื้นตัว</h3>
+            <span id="recoveryStatusBadge" class="badge">Ready</span>
+          </div>
+          <p id="recoveryMessage" class="helper-text">Ready for training.</p>
+        </article>
+
         <article class="card">
           <div class="card-title-row">
-            <h3>Today Workout</h3>
+            <h3>แผนวันนี้</h3>
             <span id="todayBadge" class="badge">Plan</span>
           </div>
           <div id="todayWorkout" class="today-workout"></div>
         </article>
 
+        <article class="card">
+          <div class="card-title-row">
+            <h3>แผนถัดไป</h3>
+            <span id="nextWorkoutDay" class="badge">Next</span>
+          </div>
+          <div id="nextWorkout" class="today-workout"></div>
+        </article>
+
         <article class="card profile-summary-card">
           <div class="card-title-row">
-            <h3>Profile & Program</h3>
-            <button class="small-link-button" data-page="profile" type="button">Edit</button>
+            <h3>โปรไฟล์นักกีฬา</h3>
+            <button class="small-link-button" data-page="profile" type="button">แก้ไข</button>
           </div>
           <div class="profile-summary-grid">
             <div>
@@ -90,16 +114,16 @@
               <strong id="dashboardBmi">-</strong>
             </div>
             <div>
-              <span>Program</span>
-              <strong id="dashboardProgram">-</strong>
+              <span>เป้าหมายหลัก</span>
+              <strong id="dashboardGoal">-</strong>
             </div>
           </div>
         </article>
 
         <article class="card">
           <div class="card-title-row">
-            <h3>Weekly Progress</h3>
-            <span id="weeklyProgressText">0 / 7</span>
+            <h3>ความคืบหน้าเป้าหมายรายสัปดาห์</h3>
+            <span id="weeklyProgressText">0 / 0 days</span>
           </div>
           <div class="progress-track">
             <div id="weeklyProgressBar" class="progress-fill"></div>
@@ -107,60 +131,41 @@
         </article>
 
         <article class="card">
-          <h3>Recent Workouts</h3>
+          <h3>Workout ล่าสุด</h3>
           <div id="recentWorkouts" class="workout-list"></div>
         </article>
 
         <article class="card">
           <div class="card-title-row">
-            <h3>Data Backup</h3>
-            <span>Local only</span>
+            <h3>สำรองข้อมูล</h3>
+            <span>เก็บในเครื่อง</span>
           </div>
           <div class="backup-actions">
-            <button class="secondary-button" id="exportDataBtn" type="button">Export JSON</button>
-            <button class="secondary-button" id="importDataBtn" type="button">Import JSON</button>
+            <button class="secondary-button" id="exportDataBtn" type="button">ส่งออก JSON</button>
+            <button class="secondary-button" id="importDataBtn" type="button">นำเข้า JSON</button>
             <input id="importFileInput" type="file" accept="application/json,.json" hidden>
           </div>
-          <p class="helper-text">Use backup before changing phones, clearing browser data, or reinstalling the app.</p>
-        </article>
-      </section>
-
-      <section id="plan" class="page" aria-labelledby="plan-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">ตารางประจำสัปดาห์</p>
-            <h2 id="plan-title">แผนการซ้อม</h2>
-          </div>
-        </div>
-        <div id="planCards" class="plan-list"></div>
-
-        <article class="card">
-          <div class="card-title-row">
-            <h3>แก้ไขแผนรายสัปดาห์</h3>
-            <button class="small-link-button" id="resetPlanBtn" type="button">Reset</button>
-          </div>
-          <form id="planEditor" class="plan-editor"></form>
-          <button class="primary-button" id="savePlanBtn" type="button">บันทึกแผนการซ้อม</button>
+          <p class="helper-text">สำรองข้อมูลก่อนเปลี่ยนเครื่อง ล้าง browser หรือ reinstall app</p>
         </article>
       </section>
 
       <section id="profile" class="page" aria-labelledby="profile-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Personal Setup</p>
-            <h2 id="profile-title">ข้อมูลผู้ใช้งาน</h2>
+            <p class="eyebrow">โปรไฟล์นักกีฬา</p>
+            <h2 id="profile-title">ข้อมูลนักกีฬา</h2>
           </div>
         </div>
 
         <form id="profileForm" class="card form-card">
           <div class="avatar-uploader">
-            <div class="avatar-preview" id="avatarPreview">
-              <span id="avatarInitial">U</span>
+            <div class="avatar-preview">
+              <span id="avatarInitial">N</span>
               <img id="profileAvatarPreview" alt="Profile preview">
             </div>
             <div>
               <h3>รูปโปรไฟล์</h3>
-              <p>อัปโหลดรูปส่วนตัวเพื่อแสดงบนแอปนี้ รูปจะเก็บไว้ในเครื่องของผู้ใช้เท่านั้น</p>
+              <p>รูปจะถูกย่อขนาดและเก็บไว้ในเครื่องผู้ใช้ผ่าน LocalStorage</p>
               <div class="backup-actions">
                 <button class="secondary-button" id="chooseAvatarBtn" type="button">เลือกรูป</button>
                 <button class="secondary-button" id="removeAvatarBtn" type="button">ลบรูป</button>
@@ -170,21 +175,21 @@
           </div>
 
           <label>
-            ชื่อผู้ใช้งาน
-            <input id="profileNameInput" type="text" placeholder="เช่น Nut, May, Bank" required>
+            ชื่อ
+            <input id="profileNameInput" type="text" placeholder="Nut" required>
           </label>
 
           <div class="field-row">
             <label>
               อายุ
-              <input id="profileAgeInput" type="number" min="10" max="90" inputmode="numeric" placeholder="ปี">
+              <input id="profileAgeInput" type="number" min="10" max="90" inputmode="numeric" placeholder="30">
             </label>
             <label>
-              เพศ
-              <select id="profileGenderInput">
-                <option value="ไม่ระบุ">ไม่ระบุ</option>
-                <option value="ชาย">ชาย</option>
-                <option value="หญิง">หญิง</option>
+              ระดับการวิ่ง
+              <select id="profileRunningLevelInput">
+                <option value="Beginner">เริ่มต้น</option>
+                <option value="Intermediate">ปานกลาง</option>
+                <option value="Advanced">ขั้นสูง</option>
               </select>
             </label>
           </div>
@@ -192,47 +197,125 @@
           <div class="field-row">
             <label>
               ส่วนสูง
-              <input id="profileHeightInput" type="number" min="100" max="230" inputmode="decimal" placeholder="ซม.">
+              <input id="profileHeightInput" type="number" min="100" max="230" inputmode="decimal" placeholder="168">
             </label>
             <label>
               น้ำหนัก
-              <input id="profileWeightInput" type="number" min="30" max="200" step="0.1" inputmode="decimal" placeholder="กก.">
+              <input id="profileWeightInput" type="number" min="30" max="200" step="0.1" inputmode="decimal" placeholder="63">
             </label>
           </div>
 
           <label>
-            เป้าหมายหลัก
-            <select id="profileGoalInput">
+            Goal Category
+            <select id="profileGoalCategoryInput">
+              <option value="สุขภาพทั่วไป">สุขภาพทั่วไป</option>
+              <option value="ลดไขมัน / คุมน้ำหนัก">ลดไขมัน / คุมน้ำหนัก</option>
               <option value="เพิ่มความฟิต">เพิ่มความฟิต</option>
-              <option value="ลดไขมัน">ลดไขมัน</option>
-              <option value="วิ่งได้นานขึ้น">วิ่งได้นานขึ้น</option>
-              <option value="เตรียมฟุตบอล/แบดมินตัน">เตรียมฟุตบอล/แบดมินตัน</option>
+              <option value="วิ่งระยะสั้น">วิ่งระยะสั้น</option>
+              <option value="วิ่งระยะกลาง">วิ่งระยะกลาง</option>
+              <option value="วิ่งระยะไกล">วิ่งระยะไกล</option>
+              <option value="เพิ่มสมรรถนะกีฬา">เพิ่มสมรรถนะกีฬา</option>
+              <option value="ฟื้นฟูร่างกาย">ฟื้นฟูร่างกาย</option>
+              <option value="กำหนดเอง">กำหนดเอง</option>
             </select>
           </label>
+
+          <label id="goalDetailField">
+            Goal Detail
+            <textarea id="profileGoalDetailInput" rows="3" placeholder="เช่น วิ่ง 5K ให้ได้ภายใน 30 นาที, ลดน้ำหนัก 3 กิโล, ออกกำลังกายให้ได้ 4 วันต่อสัปดาห์"></textarea>
+          </label>
+
+          <div class="field-row">
+            <label>
+              จำนวนวันซ้อมต่อสัปดาห์
+              <input id="profileTrainingDaysInput" type="number" min="1" max="7" inputmode="numeric" placeholder="5">
+            </label>
+            <label>
+              วันพักที่ต้องการ
+              <select id="profileRestDayInput">
+                <option value="Monday">วันจันทร์</option>
+                <option value="Tuesday">วันอังคาร</option>
+                <option value="Wednesday">วันพุธ</option>
+                <option value="Thursday">วันพฤหัสบดี</option>
+                <option value="Friday">วันศุกร์</option>
+                <option value="Saturday">วันเสาร์</option>
+                <option value="Sunday">วันอาทิตย์</option>
+              </select>
+            </label>
+          </div>
 
           <label>
             โปรแกรมการออกกำลังกาย
             <select id="profileProgramInput">
-              <option value="Balanced Fitness">Balanced Fitness</option>
-              <option value="Beginner Running">Beginner Running</option>
-              <option value="Sport Endurance">Sport Endurance</option>
-              <option value="Fat Loss & Mobility">Fat Loss & Mobility</option>
+              <option value="Balanced Fitness">ฟิตเนสสมดุล</option>
+              <option value="Beginner Running">เริ่มต้นวิ่ง</option>
+              <option value="Sport Endurance">ความอึดสำหรับกีฬา</option>
+              <option value="Fat Loss & Mobility">ลดไขมัน + Mobility</option>
             </select>
           </label>
 
-          <div class="program-info" id="programInfo">
+          <div class="program-info">
             <span id="programInfoTitle">Balanced Fitness</span>
             <p id="programInfoText"></p>
           </div>
 
           <div class="bmi-panel">
-            <span>BMI Preview</span>
+            <span>ตัวอย่างค่า BMI</span>
             <strong id="profileBmiPreview">-</strong>
             <small id="profileBmiCategory">กรอกส่วนสูงและน้ำหนักเพื่อคำนวณ BMI</small>
           </div>
 
-          <button class="primary-button" type="submit">บันทึกข้อมูลผู้ใช้งาน</button>
+          <div class="plan-recommendation" id="profilePlanRecommendation">
+            <span>แผนแนะนำจากข้อมูลคุณ</span>
+            <strong id="recommendationTitle">กรอกข้อมูลเพื่อสร้างคำแนะนำ</strong>
+            <p id="recommendationText">ระบบจะใช้ BMI, เป้าหมาย, ระดับการวิ่ง และจำนวนวันซ้อม เพื่อแนะนำแนวทางออกกำลังกายเบื้องต้น</p>
+            <div id="recommendationTags" class="recommendation-tags"></div>
+          </div>
+
+          <button class="primary-button" type="submit">บันทึกข้อมูลนักกีฬา</button>
         </form>
+      </section>
+
+      <section id="plan" class="page" aria-labelledby="plan-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">แผนรายสัปดาห์</p>
+            <h2 id="plan-title">แผนการซ้อม</h2>
+          </div>
+        </div>
+        <div id="planCards" class="plan-list"></div>
+
+        <article class="card">
+          <div class="card-title-row">
+            <h3>แก้ไขแผนรายสัปดาห์</h3>
+            <button class="small-link-button" id="resetPlanBtn" type="button">ล้างแผน</button>
+          </div>
+          <form id="planEditor" class="plan-editor"></form>
+          <button class="primary-button" id="savePlanBtn" type="button">บันทึกแผนการซ้อม</button>
+        </article>
+      </section>
+
+      <section id="recommend" class="page" aria-labelledby="recommend-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Personal Plan Guide</p>
+            <h2 id="recommend-title">แผนแนะนำ</h2>
+          </div>
+          <button class="small-link-button" id="applyRecommendedPlanBtn" type="button">ใช้แผนนี้</button>
+        </div>
+
+        <article class="coach-card">
+          <h3 id="recommendedPlanTitle">แผนออกกำลังกายที่เหมาะกับคุณ</h3>
+          <p id="recommendedPlanSummary" class="helper-text"></p>
+          <div id="recommendedPlanTags" class="recommendation-tags"></div>
+        </article>
+
+        <div id="recommendedPlanCards" class="plan-list"></div>
+
+        <article class="card">
+          <h3>หลักการของแผนนี้</h3>
+          <div id="recommendedPlanPrinciples" class="recommendation-list"></div>
+        </article>
       </section>
 
       <section id="add" class="page" aria-labelledby="add-title">
@@ -250,50 +333,63 @@
           </label>
 
           <label>
-            ประเภทการซ้อม
-            <select id="typeInput" required>
-              <option value="Run">วิ่ง</option>
-              <option value="Football">ฟุตบอล</option>
-              <option value="Badminton">แบดมินตัน</option>
+            หมวดกิจกรรม
+            <select id="activityCategoryInput" required>
+              <option value="Running">วิ่ง</option>
+              <option value="Cardio">คาร์ดิโอ</option>
+              <option value="Team Sport">กีฬาทีม</option>
+              <option value="Racket Sport">กีฬาแร็กเก็ต</option>
               <option value="Strength">เวท / Strength</option>
-              <option value="Recovery">Recovery</option>
+              <option value="Mobility / Recovery">Mobility / Recovery</option>
+              <option value="Other">อื่น ๆ</option>
             </select>
+          </label>
+
+          <label>
+            ชื่อกิจกรรม / กีฬา
+            <input id="activityNameInput" type="text" placeholder="เช่น ฟุตบอล, แบดมินตัน, ปั่นจักรยาน, โยคะ">
           </label>
 
           <div class="field-row">
             <label>
               เวลา
-              <input id="durationInput" type="number" min="1" inputmode="numeric" placeholder="นาที" required>
+              <input id="durationInput" type="number" min="1" inputmode="numeric" placeholder="min" required>
             </label>
             <label id="distanceField">
               ระยะทาง
-              <input id="distanceInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="กม.">
+              <input id="distanceInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="km">
+            </label>
+          </div>
+
+          <div class="field-row">
+            <label>
+              ความหนัก
+              <select id="intensityInput" required>
+                <option value="Low">เบา</option>
+                <option value="Medium">ปานกลาง</option>
+                <option value="High">หนัก</option>
+              </select>
+            </label>
+            <label>
+              คะแนน RPE
+              <input id="rpeInput" type="range" min="1" max="10" value="5">
+              <span id="rpeValue" class="range-value">5 / 10</span>
             </label>
           </div>
 
           <label>
-            ความหนัก
-            <select id="intensityInput" required>
-              <option value="Easy">เบา</option>
-              <option value="Moderate">ปานกลาง</option>
-              <option value="Hard">หนัก</option>
+            ความรู้สึก
+            <select id="feelingInput" required>
+              <option value="Easy">สบาย</option>
+              <option value="Good">ดี</option>
+              <option value="Tired">ล้า</option>
+              <option value="Exhausted">หมดแรง</option>
             </select>
           </label>
 
           <label>
-            ความรู้สึกหลังซ้อม
-            <input id="feelingInput" type="range" min="1" max="5" value="4">
-            <span id="feelingValue" class="range-value">4 / 5</span>
-          </label>
-
-          <label>
-            อาการเจ็บ / บาดเจ็บ
-            <input id="injuryInput" type="text" placeholder="เช่น เจ็บเข่า ตึงน่อง">
-          </label>
-
-          <label>
             หมายเหตุ
-            <textarea id="remarkInput" rows="3" placeholder="เช่น วิ่ง Zone 2, ซ้อมแกนกลาง, ลงเตะบอล"></textarea>
+            <textarea id="noteInput" rows="3" placeholder="เช่น Zone 2 run, match, doubles badminton"></textarea>
           </label>
 
           <button class="primary-button" type="submit">บันทึก Workout</button>
@@ -308,15 +404,15 @@
       <section id="running" class="page" aria-labelledby="running-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">โฟกัสการวิ่ง</p>
-            <h2 id="running-title">สรุปการวิ่ง</h2>
+            <p class="eyebrow">วิเคราะห์การวิ่ง</p>
+            <h2 id="running-title">สถิติการวิ่ง</h2>
           </div>
         </div>
 
         <div class="stats-grid">
           <article class="stat-card">
             <span>ระยะทางรวม</span>
-            <strong id="runTotalDistance">0 กม.</strong>
+            <strong id="runTotalDistance">0 km</strong>
           </article>
           <article class="stat-card">
             <span>Pace เฉลี่ย</span>
@@ -324,20 +420,38 @@
           </article>
           <article class="stat-card">
             <span>วิ่งไกลสุด</span>
-            <strong id="runLongest">0 กม.</strong>
+            <strong id="runLongest">0 km</strong>
           </article>
           <article class="stat-card">
             <span>Fastest 5K</span>
-            <strong>เร็ว ๆ นี้</strong>
+            <strong id="runFastest5k">-</strong>
           </article>
         </div>
 
         <article class="card">
           <div class="card-title-row">
-            <h3>ระยะวิ่งรายวัน</h3>
-            <span>กม.</span>
+            <h3>กราฟระยะวิ่งรายสัปดาห์</h3>
+            <span>km</span>
           </div>
           <div id="weeklyChart" class="bar-chart"></div>
+        </article>
+
+        <article class="card">
+          <h3>สถิติส่วนตัว</h3>
+          <div class="profile-summary-grid">
+            <div>
+              <span>Fastest 1K</span>
+              <strong id="prFastest1k">-</strong>
+            </div>
+            <div>
+              <span>Fastest 5K</span>
+              <strong id="prFastest5k">-</strong>
+            </div>
+            <div>
+              <span>วิ่งไกลสุด</span>
+              <strong id="prLongestRun">-</strong>
+            </div>
+          </div>
         </article>
 
         <article class="card">
@@ -349,13 +463,13 @@
       <section id="coach" class="page" aria-labelledby="coach-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Rule-based</p>
+            <p class="eyebrow">โค้ชแบบ Rule-based</p>
             <h2 id="coach-title">โค้ชแนะนำ</h2>
           </div>
         </div>
 
         <article class="coach-card">
-          <h3>คำแนะนำวันนี้</h3>
+          <h3>คำแนะนำ</h3>
           <div id="coachRecommendations" class="recommendation-list"></div>
         </article>
 
@@ -366,15 +480,26 @@
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="เมนูหลัก">
-      <button class="nav-item active" data-page="dashboard" type="button"><span>⌂</span>Dashboard</button>
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-page="dashboard" type="button"><span>⌂</span>หน้าหลัก</button>
       <button class="nav-item" data-page="plan" type="button"><span>▦</span>แผน</button>
+      <button class="nav-item" data-page="recommend" type="button"><span>◎</span>แนะนำ</button>
       <button class="nav-item add-nav" data-page="add" type="button"><span>＋</span>เพิ่ม</button>
       <button class="nav-item" data-page="running" type="button"><span>↗</span>วิ่ง</button>
       <button class="nav-item" data-page="coach" type="button"><span>◈</span>โค้ช</button>
     </nav>
+
+    <aside class="coach-nudge hidden" id="coachNudge" aria-live="polite">
+      <button class="coach-nudge-close" id="coachNudgeClose" type="button" aria-label="ปิดข้อความ">×</button>
+      <div class="coach-nudge-avatar">AI</div>
+      <div>
+        <strong id="coachNudgeTitle">โค้ชแนะนำ</strong>
+        <p id="coachNudgeMessage"></p>
+        <button class="small-link-button" id="coachNudgeAction" type="button">ดูคำแนะนำ</button>
+      </div>
+    </aside>
   </div>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
