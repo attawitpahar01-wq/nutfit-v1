@@ -16,9 +16,9 @@
         <p class="eyebrow">Personal Training</p>
         <h1>NutFit</h1>
       </div>
-      <div class="profile-pill">
-        <span>Nut</span>
-        <strong>30</strong>
+      <div class="profile-pill" id="profileShortcut" role="button" tabindex="0">
+        <span id="headerProfileName">User</span>
+        <strong id="headerProfileAge">-</strong>
       </div>
     </header>
 
@@ -69,6 +69,23 @@
           <div id="todayWorkout" class="today-workout"></div>
         </article>
 
+        <article class="card profile-summary-card">
+          <div class="card-title-row">
+            <h3>Profile & Program</h3>
+            <button class="small-link-button" data-page="profile" type="button">Edit</button>
+          </div>
+          <div class="profile-summary-grid">
+            <div>
+              <span>BMI</span>
+              <strong id="dashboardBmi">-</strong>
+            </div>
+            <div>
+              <span>Program</span>
+              <strong id="dashboardProgram">-</strong>
+            </div>
+          </div>
+        </article>
+
         <article class="card">
           <div class="card-title-row">
             <h3>Weekly Progress</h3>
@@ -106,6 +123,85 @@
           </div>
         </div>
         <div id="planCards" class="plan-list"></div>
+
+        <article class="card">
+          <div class="card-title-row">
+            <h3>แก้ไขแผนรายสัปดาห์</h3>
+            <button class="small-link-button" id="resetPlanBtn" type="button">Reset</button>
+          </div>
+          <form id="planEditor" class="plan-editor"></form>
+          <button class="primary-button" id="savePlanBtn" type="button">บันทึกแผนการซ้อม</button>
+        </article>
+      </section>
+
+      <section id="profile" class="page" aria-labelledby="profile-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Personal Setup</p>
+            <h2 id="profile-title">ข้อมูลผู้ใช้งาน</h2>
+          </div>
+        </div>
+
+        <form id="profileForm" class="card form-card">
+          <label>
+            ชื่อผู้ใช้งาน
+            <input id="profileNameInput" type="text" placeholder="เช่น Nut, May, Bank" required>
+          </label>
+
+          <div class="field-row">
+            <label>
+              อายุ
+              <input id="profileAgeInput" type="number" min="10" max="90" inputmode="numeric" placeholder="ปี">
+            </label>
+            <label>
+              เพศ
+              <select id="profileGenderInput">
+                <option value="ไม่ระบุ">ไม่ระบุ</option>
+                <option value="ชาย">ชาย</option>
+                <option value="หญิง">หญิง</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="field-row">
+            <label>
+              ส่วนสูง
+              <input id="profileHeightInput" type="number" min="100" max="230" inputmode="decimal" placeholder="ซม.">
+            </label>
+            <label>
+              น้ำหนัก
+              <input id="profileWeightInput" type="number" min="30" max="200" step="0.1" inputmode="decimal" placeholder="กก.">
+            </label>
+          </div>
+
+          <label>
+            เป้าหมายหลัก
+            <select id="profileGoalInput">
+              <option value="เพิ่มความฟิต">เพิ่มความฟิต</option>
+              <option value="ลดไขมัน">ลดไขมัน</option>
+              <option value="วิ่งได้นานขึ้น">วิ่งได้นานขึ้น</option>
+              <option value="เตรียมฟุตบอล/แบดมินตัน">เตรียมฟุตบอล/แบดมินตัน</option>
+            </select>
+          </label>
+
+          <label>
+            โปรแกรมการออกกำลังกาย
+            <select id="profileProgramInput">
+              <option value="Balanced Fitness">Balanced Fitness</option>
+              <option value="Beginner Running">Beginner Running</option>
+              <option value="Sport Endurance">Sport Endurance</option>
+              <option value="Fat Loss & Mobility">Fat Loss & Mobility</option>
+            </select>
+          </label>
+
+          <div class="bmi-panel">
+            <span>BMI Preview</span>
+            <strong id="profileBmiPreview">-</strong>
+            <small id="profileBmiCategory">กรอกส่วนสูงและน้ำหนักเพื่อคำนวณ BMI</small>
+          </div>
+
+          <button class="primary-button" type="submit">บันทึกข้อมูลผู้ใช้งาน</button>
+        </form>
       </section>
 
       <section id="add" class="page" aria-labelledby="add-title">

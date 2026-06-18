@@ -123,6 +123,10 @@ h3 {
   color: var(--text);
 }
 
+.profile-pill {
+  cursor: pointer;
+}
+
 .page {
   display: none;
 }
@@ -301,6 +305,45 @@ h3 {
   gap: 10px;
 }
 
+.profile-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-summary-grid div,
+.bmi-panel {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--inner-glow);
+  padding: 14px;
+}
+
+.profile-summary-grid span,
+.bmi-panel span,
+.bmi-panel small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.profile-summary-grid strong,
+.bmi-panel strong {
+  display: block;
+  margin-top: 7px;
+  color: var(--text);
+  font-size: 1.08rem;
+}
+
+.bmi-panel strong {
+  font-size: 2rem;
+}
+
+.bmi-panel small {
+  margin-top: 4px;
+}
+
 .workout-item,
 .recommendation-item,
 .signal-item,
@@ -337,6 +380,26 @@ h3 {
 .plan-list {
   display: grid;
   gap: 12px;
+}
+
+.plan-editor {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.plan-edit-row {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 14px;
+}
+
+.plan-edit-day {
+  color: var(--green);
+  font-weight: 900;
 }
 
 .plan-card {
@@ -449,6 +512,16 @@ textarea {
   color: var(--text);
   font-weight: 850;
   box-shadow: var(--inner-glow);
+}
+
+.small-link-button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--green);
+  padding: 8px 13px;
+  font-size: 0.78rem;
+  font-weight: 850;
 }
 
 .secondary-button:active {

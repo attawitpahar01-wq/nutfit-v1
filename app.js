@@ -1,4 +1,6 @@
 const STORAGE_KEY = "nutfit_workouts_live_v1";
+const PROFILE_KEY = "nutfit_profile_v1";
+const PLAN_KEY = "nutfit_plan_v1";
 
 const typeLabels = {
   Run: "วิ่ง",
@@ -38,7 +40,7 @@ const dashboardPlan = [
   { day: "Sunday", title: "Badminton", note: "Footwork, reaction, and aerobic load", icon: "🏸" }
 ];
 
-const weeklyPlan = [
+const defaultWeeklyPlan = [
   { day: "วันจันทร์", short: "จ", title: "Easy Run + Core", type: "Run", icon: "🏃", note: "วิ่งเบาแบบ Zone 2 แล้วเสริมแกนกลางลำตัว" },
   { day: "วันอังคาร", short: "อ", title: "Strength Training", type: "Strength", icon: "💪", note: "เสริมขา สะโพก ลำตัว และช่วงบน" },
   { day: "วันพุธ", short: "พ", title: "ฟุตบอล", type: "Football", icon: "⚽", note: "ซ้อมความฟิต ความคล่องตัว และเกมจริง" },
@@ -51,6 +53,8 @@ const weeklyPlan = [
 const sampleWorkouts = [];
 
 let workouts = loadWorkouts();
+let profile = loadProfile();
+let weeklyPlan = loadPlan();
 
 const pages = document.querySelectorAll(".page");
 const navItems = document.querySelectorAll(".nav-item");
@@ -61,15 +65,32 @@ const distanceInput = document.querySelector("#distanceInput");
 const feelingInput = document.querySelector("#feelingInput");
 const feelingValue = document.querySelector("#feelingValue");
 const importFileInput = document.querySelector("#importFileInput");
+const profileForm = document.querySelector("#profileForm");
+const profileInputs = ["Name", "Age", "Gender", "Height", "Weight", "Goal", "Program"].reduce((acc, key) => {
+  acc[key.toLowerCase()] = document.querySelector(`#profile${key}Input`);
+  return acc;
+}, {});
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#dateInput").value = formatDate(new Date());
+  const needsProfileSetup = !localStorage.getItem(PROFILE_KEY);
+  populateProfileForm();
   render();
+  if (needsProfileSetup) showPage("profile");
   registerServiceWorker();
 });
 
 navItems.forEach((button) => {
   button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+document.querySelectorAll("[data-page]").forEach((button) => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+document.querySelector("#profileShortcut").addEventListener("click", () => showPage("profile"));
+document.querySelector("#profileShortcut").addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") showPage("profile");
 });
 
 typeInput.addEventListener("change", toggleDistanceField);
@@ -122,6 +143,35 @@ document.querySelector("#importDataBtn").addEventListener("click", () => {
 
 importFileInput.addEventListener("change", importWorkoutData);
 
+profileForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  profile = {
+    name: profileInputs.name.value.trim() || "User",
+    age: Number(profileInputs.age.value || 0),
+    gender: profileInputs.gender.value,
+    height: Number(profileInputs.height.value || 0),
+    weight: Number(profileInputs.weight.value || 0),
+    goal: profileInputs.goal.value,
+    program: profileInputs.program.value
+  };
+  saveProfile();
+  render();
+  showPage("dashboard");
+});
+
+["height", "weight"].forEach((key) => {
+  profileInputs[key].addEventListener("input", renderProfilePreview);
+});
+
+document.querySelector("#savePlanBtn").addEventListener("click", savePlanFromEditor);
+document.querySelector("#resetPlanBtn").addEventListener("click", () => {
+  const confirmed = window.confirm("Reset weekly plan to the default NutFit plan?");
+  if (!confirmed) return;
+  weeklyPlan = defaultWeeklyPlan.map((item) => ({ ...item }));
+  savePlan();
+  render();
+});
+
 function loadWorkouts() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (!stored) {
@@ -141,11 +191,73 @@ function saveWorkouts() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
 }
 
+function loadProfile() {
+  const fallback = {
+    name: "User",
+    age: 0,
+    gender: "ไม่ระบุ",
+    height: 0,
+    weight: 0,
+    goal: "เพิ่มความฟิต",
+    program: "Balanced Fitness"
+  };
+  const stored = localStorage.getItem(PROFILE_KEY);
+  if (!stored) return fallback;
+
+  try {
+    return { ...fallback, ...JSON.parse(stored) };
+  } catch {
+    return fallback;
+  }
+}
+
+function saveProfile() {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+}
+
+function loadPlan() {
+  const stored = localStorage.getItem(PLAN_KEY);
+  if (!stored) return defaultWeeklyPlan.map((item) => ({ ...item }));
+
+  try {
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed) || parsed.length !== 7) return defaultWeeklyPlan.map((item) => ({ ...item }));
+    return parsed.map((item, index) => ({ ...defaultWeeklyPlan[index], ...item }));
+  } catch {
+    return defaultWeeklyPlan.map((item) => ({ ...item }));
+  }
+}
+
+function savePlan() {
+  localStorage.setItem(PLAN_KEY, JSON.stringify(weeklyPlan));
+}
+
+function populateProfileForm() {
+  profileInputs.name.value = profile.name || "";
+  profileInputs.age.value = profile.age || "";
+  profileInputs.gender.value = profile.gender || "ไม่ระบุ";
+  profileInputs.height.value = profile.height || "";
+  profileInputs.weight.value = profile.weight || "";
+  profileInputs.goal.value = profile.goal || "เพิ่มความฟิต";
+  profileInputs.program.value = profile.program || "Balanced Fitness";
+  renderProfilePreview();
+}
+
+function renderProfilePreview() {
+  const height = Number(profileInputs.height.value || 0);
+  const weight = Number(profileInputs.weight.value || 0);
+  const bmi = calculateBmi(height, weight);
+  document.querySelector("#profileBmiPreview").textContent = bmi ? bmi.toFixed(1) : "-";
+  document.querySelector("#profileBmiCategory").textContent = bmi ? bmiCategory(bmi) : "กรอกส่วนสูงและน้ำหนักเพื่อคำนวณ BMI";
+}
+
 function exportWorkoutData() {
   const payload = {
     app: "NutFit V1",
     exportedAt: new Date().toISOString(),
     version: 1,
+    profile,
+    weeklyPlan,
     workouts
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -174,10 +286,19 @@ function importWorkoutData(event) {
         return;
       }
 
-      const confirmed = window.confirm(`Import ${importedWorkouts.length} workouts? This will replace your current data.`);
+      const confirmed = window.confirm(`Import ${importedWorkouts.length} workouts? This will replace your current NutFit data.`);
       if (!confirmed) return;
 
       workouts = importedWorkouts.map(normalizeWorkout);
+      if (parsed.profile && typeof parsed.profile === "object") {
+        profile = { ...profile, ...parsed.profile };
+        saveProfile();
+        populateProfileForm();
+      }
+      if (Array.isArray(parsed.weeklyPlan) && parsed.weeklyPlan.length === 7) {
+        weeklyPlan = parsed.weeklyPlan.map((item, index) => ({ ...defaultWeeklyPlan[index], ...item }));
+        savePlan();
+      }
       saveWorkouts();
       render();
       showPage("dashboard");
@@ -192,7 +313,9 @@ function importWorkoutData(event) {
 
 function render() {
   workouts.sort((a, b) => new Date(b.date) - new Date(a.date));
+  renderProfile();
   renderPlan();
+  renderPlanEditor();
   renderDashboard();
   renderWorkoutLists();
   renderRunning();
@@ -210,6 +333,51 @@ function toggleDistanceField() {
   const showDistance = typeInput.value === "Run" || typeInput.value === "Recovery";
   distanceField.style.display = showDistance ? "grid" : "none";
   distanceInput.required = showDistance;
+}
+
+function renderProfile() {
+  const bmi = calculateBmi(profile.height, profile.weight);
+  document.querySelector("#headerProfileName").textContent = profile.name || "User";
+  document.querySelector("#headerProfileAge").textContent = profile.age ? `${profile.age}` : "-";
+  document.querySelector("#dashboardBmi").textContent = bmi ? `${bmi.toFixed(1)} ${bmiCategoryShort(bmi)}` : "Setup";
+  document.querySelector("#dashboardProgram").textContent = profile.program || "Balanced Fitness";
+}
+
+function renderPlanEditor() {
+  document.querySelector("#planEditor").innerHTML = weeklyPlan.map((item, index) => `
+    <div class="plan-edit-row">
+      <div class="plan-edit-day">${item.day}</div>
+      <label>
+        ชื่อกิจกรรม
+        <input data-plan-index="${index}" data-plan-field="title" type="text" value="${escapeAttribute(item.title)}">
+      </label>
+      <label>
+        ประเภท
+        <select data-plan-index="${index}" data-plan-field="type">
+          ${Object.entries(typeLabels).map(([value, label]) => `<option value="${value}" ${item.type === value ? "selected" : ""}>${label}</option>`).join("")}
+        </select>
+      </label>
+      <label>
+        รายละเอียด
+        <input data-plan-index="${index}" data-plan-field="note" type="text" value="${escapeAttribute(item.note)}">
+      </label>
+    </div>
+  `).join("");
+}
+
+function savePlanFromEditor() {
+  const nextPlan = weeklyPlan.map((item) => ({ ...item }));
+  document.querySelectorAll("[data-plan-index]").forEach((input) => {
+    const index = Number(input.dataset.planIndex);
+    const field = input.dataset.planField;
+    nextPlan[index][field] = input.value.trim() || defaultWeeklyPlan[index][field];
+    if (field === "type") {
+      nextPlan[index].icon = workoutIcon(input.value);
+    }
+  });
+  weeklyPlan = nextPlan;
+  savePlan();
+  render();
 }
 
 function renderDashboard() {
@@ -231,11 +399,13 @@ function renderDashboard() {
   document.querySelector("#weeklyProgressText").textContent = `${completedDays} / 7 days`;
   document.querySelector("#weeklyProgressBar").style.width = `${progress}%`;
 
-  const today = dashboardPlan[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+  const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+  const today = weeklyPlan[todayIndex];
+  const todayDay = dashboardPlan[todayIndex].day;
   const todayLogged = currentWeek.find((workout) => workout.date === formatDate(new Date()));
   document.querySelector("#todayBadge").textContent = todayLogged ? "Logged" : "Plan";
   document.querySelector("#todayWorkout").innerHTML = `
-    <div class="mini-line"><strong>${today.title}</strong><span>${today.day}</span></div>
+    <div class="mini-line"><strong>${today.title}</strong><span>${todayDay}</span></div>
     <div class="mini-line"><span>${today.note}</span><span>${today.icon}</span></div>
   `;
 
@@ -495,6 +665,29 @@ function workoutIcon(type) {
   }[type] || "•";
 }
 
+function calculateBmi(heightCm, weightKg) {
+  const heightM = Number(heightCm) / 100;
+  const weight = Number(weightKg);
+  if (!heightM || !weight) return 0;
+  return weight / (heightM * heightM);
+}
+
+function bmiCategory(bmi) {
+  if (bmi < 18.5) return "น้ำหนักน้อยกว่าเกณฑ์";
+  if (bmi < 23) return "อยู่ในเกณฑ์ปกติ";
+  if (bmi < 25) return "น้ำหนักเกินเล็กน้อย";
+  if (bmi < 30) return "น้ำหนักเกิน";
+  return "อ้วน";
+}
+
+function bmiCategoryShort(bmi) {
+  if (bmi < 18.5) return "Low";
+  if (bmi < 23) return "Normal";
+  if (bmi < 25) return "At Risk";
+  if (bmi < 30) return "High";
+  return "Very High";
+}
+
 function average(values) {
   const filtered = values.filter((value) => Number.isFinite(Number(value)));
   return filtered.length ? sum(filtered) / filtered.length : 0;
@@ -523,4 +716,8 @@ function escapeHtml(value) {
     '"': "&quot;",
     "'": "&#039;"
   }[char]));
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(String(value || ""));
 }
