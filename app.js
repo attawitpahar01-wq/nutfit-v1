@@ -1,22 +1,36 @@
 const STORAGE_KEY = "nutfit_workouts_v1";
 
+const typeLabels = {
+  Run: "วิ่ง",
+  Football: "ฟุตบอล",
+  Badminton: "แบดมินตัน",
+  Strength: "เวท / Strength",
+  Recovery: "Recovery"
+};
+
+const intensityLabels = {
+  Easy: "เบา",
+  Moderate: "ปานกลาง",
+  Hard: "หนัก"
+};
+
 const weeklyPlan = [
-  { day: "Monday", short: "Mon", title: "Easy Run + Core", type: "Run", icon: "🏃", note: "Zone 2 pace with core stability" },
-  { day: "Tuesday", short: "Tue", title: "Strength Training", type: "Strength", icon: "💪", note: "Legs, hips, and upper body" },
-  { day: "Wednesday", short: "Wed", title: "Football", type: "Football", icon: "⚽", note: "Match fitness and agility" },
-  { day: "Thursday", short: "Thu", title: "Recovery Run", type: "Recovery", icon: "♻", note: "Very easy effort or mobility" },
-  { day: "Friday", short: "Fri", title: "Speed Run / Interval", type: "Run", icon: "⚡", note: "Short reps, stop if legs feel heavy" },
-  { day: "Saturday", short: "Sat", title: "Long Run", type: "Run", icon: "⛰", note: "Build endurance gradually" },
-  { day: "Sunday", short: "Sun", title: "Badminton", type: "Badminton", icon: "🏸", note: "Footwork, reaction, and aerobic load" }
+  { day: "วันจันทร์", short: "จ", title: "Easy Run + Core", type: "Run", icon: "🏃", note: "วิ่งเบาแบบ Zone 2 แล้วเสริมแกนกลางลำตัว" },
+  { day: "วันอังคาร", short: "อ", title: "Strength Training", type: "Strength", icon: "💪", note: "เสริมขา สะโพก ลำตัว และช่วงบน" },
+  { day: "วันพุธ", short: "พ", title: "ฟุตบอล", type: "Football", icon: "⚽", note: "ซ้อมความฟิต ความคล่องตัว และเกมจริง" },
+  { day: "วันพฤหัสบดี", short: "พฤ", title: "Recovery Run", type: "Recovery", icon: "♻", note: "วิ่งเบามาก หรือเน้นยืดเหยียดฟื้นตัว" },
+  { day: "วันศุกร์", short: "ศ", title: "Speed Run / Interval", type: "Run", icon: "⚡", note: "วิ่งเร็วเป็นช่วง ถ้าขาหนักให้ลดความเข้มข้น" },
+  { day: "วันเสาร์", short: "ส", title: "Long Run", type: "Run", icon: "⛰", note: "เพิ่มความอึดด้วยระยะยาวแบบค่อยเป็นค่อยไป" },
+  { day: "วันอาทิตย์", short: "อา", title: "แบดมินตัน", type: "Badminton", icon: "🏸", note: "ฝึกฟุตเวิร์ก ปฏิกิริยา และความทนทาน" }
 ];
 
 const sampleWorkouts = [
-  { id: "sample-1", date: "2026-06-15", type: "Run", duration: 38, distance: 5.2, intensity: "Easy", feeling: 4, injury: "", remark: "Zone 2 run" },
+  { id: "sample-1", date: "2026-06-15", type: "Run", duration: 38, distance: 5.2, intensity: "Easy", feeling: 4, injury: "", remark: "วิ่ง Zone 2" },
   { id: "sample-2", date: "2026-06-16", type: "Strength", duration: 45, distance: 0, intensity: "Moderate", feeling: 4, injury: "", remark: "Squat, lunge, plank" },
-  { id: "sample-3", date: "2026-06-17", type: "Football", duration: 75, distance: 0, intensity: "Hard", feeling: 5, injury: "", remark: "Small-sided game" },
-  { id: "sample-4", date: "2026-06-18", type: "Recovery", duration: 25, distance: 2.7, intensity: "Easy", feeling: 3, injury: "", remark: "Very light jog" },
-  { id: "sample-5", date: "2026-06-20", type: "Run", duration: 62, distance: 8.4, intensity: "Moderate", feeling: 4, injury: "", remark: "Long run progression" },
-  { id: "sample-6", date: "2026-06-21", type: "Badminton", duration: 60, distance: 0, intensity: "Moderate", feeling: 4, injury: "", remark: "Doubles session" }
+  { id: "sample-3", date: "2026-06-17", type: "Football", duration: 75, distance: 0, intensity: "Hard", feeling: 5, injury: "", remark: "เตะบอลเกมเล็ก" },
+  { id: "sample-4", date: "2026-06-18", type: "Recovery", duration: 25, distance: 2.7, intensity: "Easy", feeling: 3, injury: "", remark: "วิ่งฟื้นตัวเบามาก" },
+  { id: "sample-5", date: "2026-06-20", type: "Run", duration: 62, distance: 8.4, intensity: "Moderate", feeling: 4, injury: "", remark: "Long run เพิ่มระยะ" },
+  { id: "sample-6", date: "2026-06-21", type: "Badminton", duration: 60, distance: 0, intensity: "Moderate", feeling: 4, injury: "", remark: "เล่นคู่" }
 ];
 
 let workouts = loadWorkouts();
@@ -131,16 +145,16 @@ function renderDashboard() {
   document.querySelector("#trainingScore").textContent = trainingScore;
   document.querySelector("#scoreLabel").textContent = scoreLabel(trainingScore);
   document.querySelector(".score-ring").style.setProperty("--score", `${trainingScore}%`);
-  document.querySelector("#weeklyDistance").textContent = `${runDistance.toFixed(1)} km`;
+  document.querySelector("#weeklyDistance").textContent = `${runDistance.toFixed(1)} กม.`;
   document.querySelector("#weeklyWorkouts").textContent = currentWeek.length;
-  document.querySelector("#weeklyDuration").textContent = `${duration} min`;
+  document.querySelector("#weeklyDuration").textContent = `${duration} นาที`;
   document.querySelector("#weeklyFeeling").textContent = avgFeeling ? avgFeeling.toFixed(1) : "-";
-  document.querySelector("#weeklyProgressText").textContent = `${completedDays} / 7`;
+  document.querySelector("#weeklyProgressText").textContent = `${completedDays} / 7 วัน`;
   document.querySelector("#weeklyProgressBar").style.width = `${progress}%`;
 
   const today = weeklyPlan[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
   const todayLogged = currentWeek.find((workout) => workout.date === formatDate(new Date()));
-  document.querySelector("#todayBadge").textContent = todayLogged ? "Logged" : "Plan";
+  document.querySelector("#todayBadge").textContent = todayLogged ? "บันทึกแล้ว" : "ตามแผน";
   document.querySelector("#todayWorkout").innerHTML = `
     <div class="mini-line"><strong>${today.title}</strong><span>${today.day}</span></div>
     <div class="mini-line"><span>${today.note}</span><span>${today.icon}</span></div>
@@ -159,7 +173,7 @@ function renderPlan() {
         <h3>${item.title}</h3>
         <p>${item.note}</p>
       </div>
-      <span class="badge">${item.type}</span>
+      <span class="badge">${typeLabels[item.type]}</span>
     </article>
   `).join("");
 }
@@ -178,12 +192,13 @@ function renderWorkoutCollection(selector, list, allowDelete) {
   container.innerHTML = list.map((workout) => `
     <div class="workout-item">
       <div>
-        <strong>${workoutIcon(workout.type)} ${workout.type}</strong>
-        <small>${formatDisplayDate(workout.date)} • ${workout.duration} min${isRunLike(workout) ? ` • ${Number(workout.distance).toFixed(1)} km` : ""}</small>
-        <small class="${workout.intensity.toLowerCase()}">${workout.intensity} • Feeling ${workout.feeling}/5</small>
-        ${workout.injury ? `<small class="hard">Injury: ${escapeHtml(workout.injury)}</small>` : ""}
+        <strong>${workoutIcon(workout.type)} ${typeLabels[workout.type] || workout.type}</strong>
+        <small>${formatDisplayDate(workout.date)} • ${workout.duration} นาที${isRunLike(workout) ? ` • ${Number(workout.distance).toFixed(1)} กม.` : ""}</small>
+        <small class="${workout.intensity.toLowerCase()}">${intensityLabels[workout.intensity]} • ความรู้สึก ${workout.feeling}/5</small>
+        ${workout.injury ? `<small class="hard">อาการเจ็บ: ${escapeHtml(workout.injury)}</small>` : ""}
+        ${workout.remark ? `<small>${escapeHtml(workout.remark)}</small>` : ""}
       </div>
-      ${allowDelete ? `<button class="delete-btn" type="button" onclick="deleteWorkout('${workout.id}')" title="Delete workout">×</button>` : ""}
+      ${allowDelete ? `<button class="delete-btn" type="button" onclick="deleteWorkout('${workout.id}')" title="ลบ Workout">×</button>` : ""}
     </div>
   `).join("");
 }
@@ -195,9 +210,9 @@ function renderRunning() {
   const pace = totalDistance ? totalDuration / totalDistance : 0;
   const longest = runs.length ? Math.max(...runs.map((workout) => Number(workout.distance || 0))) : 0;
 
-  document.querySelector("#runTotalDistance").textContent = `${totalDistance.toFixed(1)} km`;
-  document.querySelector("#runAveragePace").textContent = pace ? `${pace.toFixed(1)} min/km` : "-";
-  document.querySelector("#runLongest").textContent = `${longest.toFixed(1)} km`;
+  document.querySelector("#runTotalDistance").textContent = `${totalDistance.toFixed(1)} กม.`;
+  document.querySelector("#runAveragePace").textContent = pace ? `${pace.toFixed(1)} นาที/กม.` : "-";
+  document.querySelector("#runLongest").textContent = `${longest.toFixed(1)} กม.`;
   renderWeeklyChart();
   renderSportSummary();
 }
@@ -233,11 +248,11 @@ function renderSportSummary() {
     return `
       <div class="sport-row">
         <div>
-          <strong>${workoutIcon(sport)} ${sport}</strong>
-          <small>${monthly.length} sessions this month</small>
+          <strong>${workoutIcon(sport)} ${typeLabels[sport]}</strong>
+          <small>${monthly.length} ครั้งในเดือนนี้</small>
         </div>
         <div>
-          <strong>${avgDuration ? Math.round(avgDuration) : 0} min</strong>
+          <strong>${avgDuration ? Math.round(avgDuration) : 0} นาที</strong>
           <small>${avgIntensity}</small>
         </div>
       </div>
@@ -256,23 +271,23 @@ function renderCoach() {
   const recommendations = [];
 
   if (hardCount > 3) {
-    recommendations.push({ level: "Hard load", text: "สัปดาห์นี้มี Hard Workout เกิน 3 วัน ควรเพิ่ม Recovery หรือ Easy Day เพื่อให้ร่างกายฟื้นตัว" });
+    recommendations.push({ level: "โหลดหนักเกินไป", text: "สัปดาห์นี้มี Workout หนักเกิน 3 วัน ควรเพิ่มวันพักหรือเปลี่ยนเป็น Easy Day เพื่อให้ร่างกายฟื้นตัว" });
   }
 
   if (weeklyDistance > 25 && hasFootball && hasBadminton) {
-    recommendations.push({ level: "High load", text: "วิ่งรวมเกิน 25 km และมีทั้ง Football + Badminton ระวังโหลดสะสมที่ขาและเข่า" });
+    recommendations.push({ level: "โหลดรวมสูง", text: "วิ่งรวมเกิน 25 กม. และมีทั้งฟุตบอลกับแบดมินตัน ระวังโหลดสะสมที่ขา เข่า และข้อเท้า" });
   }
 
   if (tomorrowPlan.type === "Football") {
-    recommendations.push({ level: "Tomorrow football", text: "พรุ่งนี้เป็น Football ไม่แนะนำ Interval วันนี้ ควร Easy Run หรือ Mobility แทน" });
+    recommendations.push({ level: "พรุ่งนี้มีฟุตบอล", text: "ไม่แนะนำให้วิ่ง Interval วันนี้ ควรเลือก Easy Run, Recovery หรือ Mobility เพื่อเก็บแรงไว้เตะบอล" });
   }
 
   if (hasInjury) {
-    recommendations.push({ level: "Injury note", text: "มีบันทึกอาการเจ็บในสัปดาห์นี้ แนะนำพัก ลดความหนัก หรือ Recovery Run เท่านั้น" });
+    recommendations.push({ level: "มีบันทึกอาการเจ็บ", text: "มีอาการเจ็บในสัปดาห์นี้ แนะนำให้พัก ลดความหนัก หรือทำ Recovery Run เท่านั้น ถ้าเจ็บต่อเนื่องควรหยุดซ้อมหนัก" });
   }
 
   if (!recommendations.length) {
-    recommendations.push({ level: "Balanced", text: "โหลดสัปดาห์นี้ดูสมดุลดี รักษา Easy Run ให้เบาพอ และเพิ่มระยะทีละน้อย" });
+    recommendations.push({ level: "สมดุลดี", text: "โหลดการซ้อมสัปดาห์นี้ดูสมดุล รักษาวันวิ่งเบาให้เบาจริง และเพิ่มระยะอย่างค่อยเป็นค่อยไป" });
   }
 
   document.querySelector("#coachRecommendations").innerHTML = recommendations.map((item) => `
@@ -285,10 +300,10 @@ function renderCoach() {
   `).join("");
 
   document.querySelector("#loadSignals").innerHTML = `
-    <div class="signal-item"><strong>${hardCount}</strong><span>Hard workouts this week</span></div>
-    <div class="signal-item"><strong>${weeklyDistance.toFixed(1)} km</strong><span>Weekly running distance</span></div>
-    <div class="signal-item"><strong>${hasFootball ? "Yes" : "No"}</strong><span>Football included</span></div>
-    <div class="signal-item"><strong>${hasBadminton ? "Yes" : "No"}</strong><span>Badminton included</span></div>
+    <div class="signal-item"><strong>${hardCount}</strong><span>Workout หนักในสัปดาห์นี้</span></div>
+    <div class="signal-item"><strong>${weeklyDistance.toFixed(1)} กม.</strong><span>ระยะวิ่งรวมสัปดาห์นี้</span></div>
+    <div class="signal-item"><strong>${hasFootball ? "มี" : "ไม่มี"}</strong><span>ฟุตบอลในสัปดาห์นี้</span></div>
+    <div class="signal-item"><strong>${hasBadminton ? "มี" : "ไม่มี"}</strong><span>แบดมินตันในสัปดาห์นี้</span></div>
   `;
 }
 
@@ -335,10 +350,10 @@ function calculateTrainingScore(week, distance, avgFeeling) {
 }
 
 function scoreLabel(score) {
-  if (score >= 80) return "Strong";
-  if (score >= 60) return "Good";
-  if (score >= 35) return "Building";
-  return "Start";
+  if (score >= 80) return "ดีมาก";
+  if (score >= 60) return "กำลังดี";
+  if (score >= 35) return "กำลังสร้างฐาน";
+  return "เริ่มต้น";
 }
 
 function dominantIntensity(list) {
@@ -347,7 +362,8 @@ function dominantIntensity(list) {
     acc[workout.intensity] = (acc[workout.intensity] || 0) + 1;
     return acc;
   }, {});
-  return Object.entries(count).sort((a, b) => b[1] - a[1])[0][0];
+  const key = Object.entries(count).sort((a, b) => b[1] - a[1])[0][0];
+  return intensityLabels[key] || key;
 }
 
 function isRunLike(workout) {

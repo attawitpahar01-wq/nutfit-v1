@@ -11,12 +11,12 @@
   <div class="app-shell">
     <header class="app-header">
       <div>
-        <p class="eyebrow">Personal Training</p>
+        <p class="eyebrow">แอปฝึกซ้อมส่วนตัว</p>
         <h1>NutFit</h1>
       </div>
       <div class="profile-pill">
         <span>นัท</span>
-        <strong>30</strong>
+        <strong>30 ปี</strong>
       </div>
     </header>
 
@@ -24,52 +24,52 @@
       <section id="dashboard" class="page active" aria-labelledby="dashboard-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">This Week</p>
-            <h2 id="dashboard-title">Dashboard</h2>
+            <p class="eyebrow">สัปดาห์นี้</p>
+            <h2 id="dashboard-title">แดชบอร์ด</h2>
           </div>
-          <button class="icon-button" id="resetDemoBtn" type="button" title="Reset sample data">↻</button>
+          <button class="icon-button" id="resetDemoBtn" type="button" title="รีเซ็ตข้อมูลตัวอย่าง">↻</button>
         </div>
 
         <div class="hero-card">
           <div>
-            <p>Training Score</p>
+            <p>คะแนนการซ้อม</p>
             <strong id="trainingScore">0</strong>
           </div>
           <div class="score-ring">
-            <span id="scoreLabel">Ready</span>
+            <span id="scoreLabel">พร้อมเริ่ม</span>
           </div>
         </div>
 
         <div class="stats-grid">
           <article class="stat-card">
-            <span>Total Running</span>
-            <strong id="weeklyDistance">0 km</strong>
+            <span>ระยะวิ่งรวม</span>
+            <strong id="weeklyDistance">0 กม.</strong>
           </article>
           <article class="stat-card">
-            <span>Workouts</span>
+            <span>จำนวนครั้งที่ซ้อม</span>
             <strong id="weeklyWorkouts">0</strong>
           </article>
           <article class="stat-card">
-            <span>Duration</span>
-            <strong id="weeklyDuration">0 min</strong>
+            <span>เวลารวม</span>
+            <strong id="weeklyDuration">0 นาที</strong>
           </article>
           <article class="stat-card">
-            <span>Avg Feeling</span>
+            <span>ความรู้สึกเฉลี่ย</span>
             <strong id="weeklyFeeling">-</strong>
           </article>
         </div>
 
         <article class="card">
           <div class="card-title-row">
-            <h3>Today Workout</h3>
-            <span id="todayBadge" class="badge">Plan</span>
+            <h3>แผนวันนี้</h3>
+            <span id="todayBadge" class="badge">ตามแผน</span>
           </div>
           <div id="todayWorkout" class="today-workout"></div>
         </article>
 
         <article class="card">
           <div class="card-title-row">
-            <h3>Weekly Progress</h3>
+            <h3>ความคืบหน้ารายสัปดาห์</h3>
             <span id="weeklyProgressText">0 / 7</span>
           </div>
           <div class="progress-track">
@@ -78,7 +78,7 @@
         </article>
 
         <article class="card">
-          <h3>Recent Workouts</h3>
+          <h3>บันทึกล่าสุด</h3>
           <div id="recentWorkouts" class="workout-list"></div>
         </article>
       </section>
@@ -86,8 +86,8 @@
       <section id="plan" class="page" aria-labelledby="plan-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Weekly Rhythm</p>
-            <h2 id="plan-title">Training Plan</h2>
+            <p class="eyebrow">ตารางประจำสัปดาห์</p>
+            <h2 id="plan-title">แผนการซ้อม</h2>
           </div>
         </div>
         <div id="planCards" class="plan-list"></div>
@@ -96,69 +96,69 @@
       <section id="add" class="page" aria-labelledby="add-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Log Session</p>
-            <h2 id="add-title">Add Workout</h2>
+            <p class="eyebrow">บันทึกการซ้อม</p>
+            <h2 id="add-title">เพิ่ม Workout</h2>
           </div>
         </div>
 
         <form id="workoutForm" class="card form-card">
           <label>
-            Date
+            วันที่
             <input id="dateInput" type="date" required>
           </label>
 
           <label>
-            Workout Type
+            ประเภทการซ้อม
             <select id="typeInput" required>
-              <option value="Run">Run</option>
-              <option value="Football">Football</option>
-              <option value="Badminton">Badminton</option>
-              <option value="Strength">Strength</option>
+              <option value="Run">วิ่ง</option>
+              <option value="Football">ฟุตบอล</option>
+              <option value="Badminton">แบดมินตัน</option>
+              <option value="Strength">เวท / Strength</option>
               <option value="Recovery">Recovery</option>
             </select>
           </label>
 
           <div class="field-row">
             <label>
-              Duration
-              <input id="durationInput" type="number" min="1" inputmode="numeric" placeholder="min" required>
+              เวลา
+              <input id="durationInput" type="number" min="1" inputmode="numeric" placeholder="นาที" required>
             </label>
             <label id="distanceField">
-              Distance
-              <input id="distanceInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="km">
+              ระยะทาง
+              <input id="distanceInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="กม.">
             </label>
           </div>
 
           <label>
-            Intensity
+            ความหนัก
             <select id="intensityInput" required>
-              <option value="Easy">Easy</option>
-              <option value="Moderate">Moderate</option>
-              <option value="Hard">Hard</option>
+              <option value="Easy">เบา</option>
+              <option value="Moderate">ปานกลาง</option>
+              <option value="Hard">หนัก</option>
             </select>
           </label>
 
           <label>
-            Feeling Score
+            ความรู้สึกหลังซ้อม
             <input id="feelingInput" type="range" min="1" max="5" value="4">
             <span id="feelingValue" class="range-value">4 / 5</span>
           </label>
 
           <label>
-            Injury Note
+            อาการเจ็บ / บาดเจ็บ
             <input id="injuryInput" type="text" placeholder="เช่น เจ็บเข่า ตึงน่อง">
           </label>
 
           <label>
-            Remark
-            <textarea id="remarkInput" rows="3" placeholder="Zone 2 run, core work, match notes"></textarea>
+            หมายเหตุ
+            <textarea id="remarkInput" rows="3" placeholder="เช่น วิ่ง Zone 2, ซ้อมแกนกลาง, ลงเตะบอล"></textarea>
           </label>
 
-          <button class="primary-button" type="submit">Save Workout</button>
+          <button class="primary-button" type="submit">บันทึก Workout</button>
         </form>
 
         <article class="card">
-          <h3>All Workouts</h3>
+          <h3>Workout ทั้งหมด</h3>
           <div id="allWorkouts" class="workout-list"></div>
         </article>
       </section>
@@ -166,40 +166,40 @@
       <section id="running" class="page" aria-labelledby="running-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Run Focus</p>
-            <h2 id="running-title">Running Summary</h2>
+            <p class="eyebrow">โฟกัสการวิ่ง</p>
+            <h2 id="running-title">สรุปการวิ่ง</h2>
           </div>
         </div>
 
         <div class="stats-grid">
           <article class="stat-card">
-            <span>Total Distance</span>
-            <strong id="runTotalDistance">0 km</strong>
+            <span>ระยะทางรวม</span>
+            <strong id="runTotalDistance">0 กม.</strong>
           </article>
           <article class="stat-card">
-            <span>Average Pace</span>
+            <span>Pace เฉลี่ย</span>
             <strong id="runAveragePace">-</strong>
           </article>
           <article class="stat-card">
-            <span>Longest Run</span>
-            <strong id="runLongest">0 km</strong>
+            <span>วิ่งไกลสุด</span>
+            <strong id="runLongest">0 กม.</strong>
           </article>
           <article class="stat-card">
             <span>Fastest 5K</span>
-            <strong>Coming soon</strong>
+            <strong>เร็ว ๆ นี้</strong>
           </article>
         </div>
 
         <article class="card">
           <div class="card-title-row">
-            <h3>Weekly Distance</h3>
-            <span>km</span>
+            <h3>ระยะวิ่งรายวัน</h3>
+            <span>กม.</span>
           </div>
           <div id="weeklyChart" class="bar-chart"></div>
         </article>
 
         <article class="card">
-          <h3>Sport Tracker</h3>
+          <h3>สรุปกีฬาเสริม</h3>
           <div id="sportSummary" class="sport-summary"></div>
         </article>
       </section>
@@ -208,28 +208,28 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">Rule-based</p>
-            <h2 id="coach-title">AI Coach</h2>
+            <h2 id="coach-title">โค้ชแนะนำ</h2>
           </div>
         </div>
 
         <article class="coach-card">
-          <h3>Recommendation</h3>
+          <h3>คำแนะนำวันนี้</h3>
           <div id="coachRecommendations" class="recommendation-list"></div>
         </article>
 
         <article class="card">
-          <h3>Load Signals</h3>
+          <h3>สัญญาณโหลดการซ้อม</h3>
           <div id="loadSignals" class="signal-list"></div>
         </article>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Primary navigation">
-      <button class="nav-item active" data-page="dashboard" type="button"><span>⌂</span>Dashboard</button>
-      <button class="nav-item" data-page="plan" type="button"><span>▦</span>Plan</button>
-      <button class="nav-item add-nav" data-page="add" type="button"><span>＋</span>Add</button>
-      <button class="nav-item" data-page="running" type="button"><span>↗</span>Running</button>
-      <button class="nav-item" data-page="coach" type="button"><span>◈</span>Coach</button>
+    <nav class="bottom-nav" aria-label="เมนูหลัก">
+      <button class="nav-item active" data-page="dashboard" type="button"><span>⌂</span>หน้าหลัก</button>
+      <button class="nav-item" data-page="plan" type="button"><span>▦</span>แผน</button>
+      <button class="nav-item add-nav" data-page="add" type="button"><span>＋</span>เพิ่ม</button>
+      <button class="nav-item" data-page="running" type="button"><span>↗</span>วิ่ง</button>
+      <button class="nav-item" data-page="coach" type="button"><span>◈</span>โค้ช</button>
     </nav>
   </div>
 
