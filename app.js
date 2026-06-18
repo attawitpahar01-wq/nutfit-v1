@@ -30,6 +30,25 @@ const intensityLabelsEn = {
   Hard: "Hard"
 };
 
+const programDescriptions = {
+  "Balanced Fitness": {
+    title: "Balanced Fitness",
+    text: "เหมาะกับคนที่อยากเพิ่มความฟิตโดยรวมแบบสมดุล มีทั้งวิ่งเบา เวทเทรนนิ่ง Recovery และกีฬาเสริม ประมาณ 4-6 วันต่อสัปดาห์"
+  },
+  "Beginner Running": {
+    title: "Beginner Running",
+    text: "เหมาะกับผู้เริ่มต้นวิ่งหรือกลับมาออกกำลังกายใหม่ เน้นวิ่งเบา สลับพัก ลดความเสี่ยงบาดเจ็บ และค่อย ๆ เพิ่มระยะ"
+  },
+  "Sport Endurance": {
+    title: "Sport Endurance",
+    text: "เหมาะกับคนที่เล่นฟุตบอล แบดมินตัน หรือกีฬาที่ใช้แรงต่อเนื่อง เน้นความอึด ความคล่องตัว ความเร็ว และการฟื้นตัวระหว่างวันซ้อมหนัก"
+  },
+  "Fat Loss & Mobility": {
+    title: "Fat Loss & Mobility",
+    text: "เหมาะกับคนที่อยากลดไขมันและขยับร่างกายให้ดีขึ้น เน้นคาร์ดิโอระดับปานกลาง เวทพื้นฐาน เดินเร็ว และ Mobility เพื่อลดความตึงของร่างกาย"
+  }
+};
+
 const dashboardPlan = [
   { day: "Monday", title: "Easy Run + Core", note: "Zone 2 pace with core stability", icon: "🏃" },
   { day: "Tuesday", title: "Strength Training", note: "Legs, hips, core, and upper body", icon: "💪" },
@@ -164,6 +183,10 @@ profileForm.addEventListener("submit", (event) => {
   profileInputs[key].addEventListener("input", renderProfilePreview);
 });
 
+profileInputs.program.addEventListener("change", () => {
+  renderProgramDescription(profileInputs.program.value);
+});
+
 document.querySelector("#savePlanBtn").addEventListener("click", savePlanFromEditor);
 document.querySelector("#resetPlanBtn").addEventListener("click", () => {
   const confirmed = window.confirm("Reset weekly plan to the default NutFit plan?");
@@ -262,6 +285,7 @@ function populateProfileForm() {
   profileInputs.goal.value = profile.goal || "เพิ่มความฟิต";
   profileInputs.program.value = profile.program || "Balanced Fitness";
   renderProfilePreview();
+  renderProgramDescription(profileInputs.program.value);
 }
 
 function renderProfilePreview() {
@@ -270,6 +294,12 @@ function renderProfilePreview() {
   const bmi = calculateBmi(height, weight);
   document.querySelector("#profileBmiPreview").textContent = bmi ? bmi.toFixed(1) : "-";
   document.querySelector("#profileBmiCategory").textContent = bmi ? bmiCategory(bmi) : "กรอกส่วนสูงและน้ำหนักเพื่อคำนวณ BMI";
+}
+
+function renderProgramDescription(program) {
+  const info = programDescriptions[program] || programDescriptions["Balanced Fitness"];
+  document.querySelector("#programInfoTitle").textContent = info.title;
+  document.querySelector("#programInfoText").textContent = info.text;
 }
 
 function handleAvatarUpload(event) {
