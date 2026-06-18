@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07110d">
+  <title>NutFit V1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Personal Training</p>
+        <h1>NutFit</h1>
+      </div>
+      <div class="profile-pill">
+        <span>นัท</span>
+        <strong>30</strong>
+      </div>
+    </header>
+
+    <main>
+      <section id="dashboard" class="page active" aria-labelledby="dashboard-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">This Week</p>
+            <h2 id="dashboard-title">Dashboard</h2>
+          </div>
+          <button class="icon-button" id="resetDemoBtn" type="button" title="Reset sample data">↻</button>
+        </div>
+
+        <div class="hero-card">
+          <div>
+            <p>Training Score</p>
+            <strong id="trainingScore">0</strong>
+          </div>
+          <div class="score-ring">
+            <span id="scoreLabel">Ready</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span>Total Running</span>
+            <strong id="weeklyDistance">0 km</strong>
+          </article>
+          <article class="stat-card">
+            <span>Workouts</span>
+            <strong id="weeklyWorkouts">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Duration</span>
+            <strong id="weeklyDuration">0 min</strong>
+          </article>
+          <article class="stat-card">
+            <span>Avg Feeling</span>
+            <strong id="weeklyFeeling">-</strong>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-title-row">
+            <h3>Today Workout</h3>
+            <span id="todayBadge" class="badge">Plan</span>
+          </div>
+          <div id="todayWorkout" class="today-workout"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-title-row">
+            <h3>Weekly Progress</h3>
+            <span id="weeklyProgressText">0 / 7</span>
+          </div>
+          <div class="progress-track">
+            <div id="weeklyProgressBar" class="progress-fill"></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Recent Workouts</h3>
+          <div id="recentWorkouts" class="workout-list"></div>
+        </article>
+      </section>
+
+      <section id="plan" class="page" aria-labelledby="plan-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Weekly Rhythm</p>
+            <h2 id="plan-title">Training Plan</h2>
+          </div>
+        </div>
+        <div id="planCards" class="plan-list"></div>
+      </section>
+
+      <section id="add" class="page" aria-labelledby="add-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Log Session</p>
+            <h2 id="add-title">Add Workout</h2>
+          </div>
+        </div>
+
+        <form id="workoutForm" class="card form-card">
+          <label>
+            Date
+            <input id="dateInput" type="date" required>
+          </label>
+
+          <label>
+            Workout Type
+            <select id="typeInput" required>
+              <option value="Run">Run</option>
+              <option value="Football">Football</option>
+              <option value="Badminton">Badminton</option>
+              <option value="Strength">Strength</option>
+              <option value="Recovery">Recovery</option>
+            </select>
+          </label>
+
+          <div class="field-row">
+            <label>
+              Duration
+              <input id="durationInput" type="number" min="1" inputmode="numeric" placeholder="min" required>
+            </label>
+            <label id="distanceField">
+              Distance
+              <input id="distanceInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="km">
+            </label>
+          </div>
+
+          <label>
+            Intensity
+            <select id="intensityInput" required>
+              <option value="Easy">Easy</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </label>
+
+          <label>
+            Feeling Score
+            <input id="feelingInput" type="range" min="1" max="5" value="4">
+            <span id="feelingValue" class="range-value">4 / 5</span>
+          </label>
+
+          <label>
+            Injury Note
+            <input id="injuryInput" type="text" placeholder="เช่น เจ็บเข่า ตึงน่อง">
+          </label>
+
+          <label>
+            Remark
+            <textarea id="remarkInput" rows="3" placeholder="Zone 2 run, core work, match notes"></textarea>
+          </label>
+
+          <button class="primary-button" type="submit">Save Workout</button>
+        </form>
+
+        <article class="card">
+          <h3>All Workouts</h3>
+          <div id="allWorkouts" class="workout-list"></div>
+        </article>
+      </section>
+
+      <section id="running" class="page" aria-labelledby="running-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Run Focus</p>
+            <h2 id="running-title">Running Summary</h2>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span>Total Distance</span>
+            <strong id="runTotalDistance">0 km</strong>
+          </article>
+          <article class="stat-card">
+            <span>Average Pace</span>
+            <strong id="runAveragePace">-</strong>
+          </article>
+          <article class="stat-card">
+            <span>Longest Run</span>
+            <strong id="runLongest">0 km</strong>
+          </article>
+          <article class="stat-card">
+            <span>Fastest 5K</span>
+            <strong>Coming soon</strong>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-title-row">
+            <h3>Weekly Distance</h3>
+            <span>km</span>
+          </div>
+          <div id="weeklyChart" class="bar-chart"></div>
+        </article>
+
+        <article class="card">
+          <h3>Sport Tracker</h3>
+          <div id="sportSummary" class="sport-summary"></div>
+        </article>
+      </section>
+
+      <section id="coach" class="page" aria-labelledby="coach-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Rule-based</p>
+            <h2 id="coach-title">AI Coach</h2>
+          </div>
+        </div>
+
+        <article class="coach-card">
+          <h3>Recommendation</h3>
+          <div id="coachRecommendations" class="recommendation-list"></div>
+        </article>
+
+        <article class="card">
+          <h3>Load Signals</h3>
+          <div id="loadSignals" class="signal-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item active" data-page="dashboard" type="button"><span>⌂</span>Dashboard</button>
+      <button class="nav-item" data-page="plan" type="button"><span>▦</span>Plan</button>
+      <button class="nav-item add-nav" data-page="add" type="button"><span>＋</span>Add</button>
+      <button class="nav-item" data-page="running" type="button"><span>↗</span>Running</button>
+      <button class="nav-item" data-page="coach" type="button"><span>◈</span>Coach</button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
