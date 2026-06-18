@@ -14,6 +14,30 @@ const intensityLabels = {
   Hard: "หนัก"
 };
 
+const typeLabelsEn = {
+  Run: "Run",
+  Football: "Football",
+  Badminton: "Badminton",
+  Strength: "Strength",
+  Recovery: "Recovery"
+};
+
+const intensityLabelsEn = {
+  Easy: "Easy",
+  Moderate: "Moderate",
+  Hard: "Hard"
+};
+
+const dashboardPlan = [
+  { day: "Monday", title: "Easy Run + Core", note: "Zone 2 pace with core stability", icon: "🏃" },
+  { day: "Tuesday", title: "Strength Training", note: "Legs, hips, core, and upper body", icon: "💪" },
+  { day: "Wednesday", title: "Football", note: "Match fitness, agility, and game speed", icon: "⚽" },
+  { day: "Thursday", title: "Recovery Run", note: "Very easy effort or mobility work", icon: "♻" },
+  { day: "Friday", title: "Speed Run / Interval", note: "Short fast reps, reduce load if legs feel heavy", icon: "⚡" },
+  { day: "Saturday", title: "Long Run", note: "Build endurance gradually", icon: "⛰" },
+  { day: "Sunday", title: "Badminton", note: "Footwork, reaction, and aerobic load", icon: "🏸" }
+];
+
 const weeklyPlan = [
   { day: "วันจันทร์", short: "จ", title: "Easy Run + Core", type: "Run", icon: "🏃", note: "วิ่งเบาแบบ Zone 2 แล้วเสริมแกนกลางลำตัว" },
   { day: "วันอังคาร", short: "อ", title: "Strength Training", type: "Strength", icon: "💪", note: "เสริมขา สะโพก ลำตัว และช่วงบน" },
@@ -145,22 +169,22 @@ function renderDashboard() {
   document.querySelector("#trainingScore").textContent = trainingScore;
   document.querySelector("#scoreLabel").textContent = scoreLabel(trainingScore);
   document.querySelector(".score-ring").style.setProperty("--score", `${trainingScore}%`);
-  document.querySelector("#weeklyDistance").textContent = `${runDistance.toFixed(1)} กม.`;
+  document.querySelector("#weeklyDistance").textContent = `${runDistance.toFixed(1)} km`;
   document.querySelector("#weeklyWorkouts").textContent = currentWeek.length;
-  document.querySelector("#weeklyDuration").textContent = `${duration} นาที`;
+  document.querySelector("#weeklyDuration").textContent = `${duration} min`;
   document.querySelector("#weeklyFeeling").textContent = avgFeeling ? avgFeeling.toFixed(1) : "-";
-  document.querySelector("#weeklyProgressText").textContent = `${completedDays} / 7 วัน`;
+  document.querySelector("#weeklyProgressText").textContent = `${completedDays} / 7 days`;
   document.querySelector("#weeklyProgressBar").style.width = `${progress}%`;
 
-  const today = weeklyPlan[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+  const today = dashboardPlan[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
   const todayLogged = currentWeek.find((workout) => workout.date === formatDate(new Date()));
-  document.querySelector("#todayBadge").textContent = todayLogged ? "บันทึกแล้ว" : "ตามแผน";
+  document.querySelector("#todayBadge").textContent = todayLogged ? "Logged" : "Plan";
   document.querySelector("#todayWorkout").innerHTML = `
     <div class="mini-line"><strong>${today.title}</strong><span>${today.day}</span></div>
     <div class="mini-line"><span>${today.note}</span><span>${today.icon}</span></div>
   `;
 
-  renderWorkoutCollection("#recentWorkouts", workouts.slice(0, 4), false);
+  renderWorkoutCollection("#recentWorkouts", workouts.slice(0, 4), false, "en");
 }
 
 function renderPlan() {
@@ -182,20 +206,26 @@ function renderWorkoutLists() {
   renderWorkoutCollection("#allWorkouts", workouts, true);
 }
 
-function renderWorkoutCollection(selector, list, allowDelete) {
+function renderWorkoutCollection(selector, list, allowDelete, language = "th") {
   const container = document.querySelector(selector);
+  const labels = language === "en" ? typeLabelsEn : typeLabels;
+  const intensity = language === "en" ? intensityLabelsEn : intensityLabels;
+  const durationUnit = language === "en" ? "min" : "นาที";
+  const distanceUnit = language === "en" ? "km" : "กม.";
+  const feelingText = language === "en" ? "Feeling" : "ความรู้สึก";
+  const injuryText = language === "en" ? "Injury" : "อาการเจ็บ";
   if (!list.length) {
-    container.innerHTML = `<div class="empty-state">ยังไม่มีข้อมูล Workout</div>`;
+    container.innerHTML = `<div class="empty-state">${language === "en" ? "No workouts yet" : "ยังไม่มีข้อมูล Workout"}</div>`;
     return;
   }
 
   container.innerHTML = list.map((workout) => `
     <div class="workout-item">
       <div>
-        <strong>${workoutIcon(workout.type)} ${typeLabels[workout.type] || workout.type}</strong>
-        <small>${formatDisplayDate(workout.date)} • ${workout.duration} นาที${isRunLike(workout) ? ` • ${Number(workout.distance).toFixed(1)} กม.` : ""}</small>
-        <small class="${workout.intensity.toLowerCase()}">${intensityLabels[workout.intensity]} • ความรู้สึก ${workout.feeling}/5</small>
-        ${workout.injury ? `<small class="hard">อาการเจ็บ: ${escapeHtml(workout.injury)}</small>` : ""}
+        <strong>${workoutIcon(workout.type)} ${labels[workout.type] || workout.type}</strong>
+        <small>${formatDisplayDate(workout.date)} • ${workout.duration} ${durationUnit}${isRunLike(workout) ? ` • ${Number(workout.distance).toFixed(1)} ${distanceUnit}` : ""}</small>
+        <small class="${workout.intensity.toLowerCase()}">${intensity[workout.intensity]} • ${feelingText} ${workout.feeling}/5</small>
+        ${workout.injury ? `<small class="hard">${injuryText}: ${escapeHtml(workout.injury)}</small>` : ""}
         ${workout.remark ? `<small>${escapeHtml(workout.remark)}</small>` : ""}
       </div>
       ${allowDelete ? `<button class="delete-btn" type="button" onclick="deleteWorkout('${workout.id}')" title="ลบ Workout">×</button>` : ""}
@@ -350,10 +380,10 @@ function calculateTrainingScore(week, distance, avgFeeling) {
 }
 
 function scoreLabel(score) {
-  if (score >= 80) return "ดีมาก";
-  if (score >= 60) return "กำลังดี";
-  if (score >= 35) return "กำลังสร้างฐาน";
-  return "เริ่มต้น";
+  if (score >= 80) return "Strong";
+  if (score >= 60) return "Good";
+  if (score >= 35) return "Building";
+  return "Start";
 }
 
 function dominantIntensity(list) {
