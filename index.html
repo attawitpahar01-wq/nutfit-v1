@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07110d">
-  <title>NutFit V1</title>
+  <title>MyFit Coach</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
@@ -13,8 +13,8 @@
   <div class="app-shell">
     <header class="app-header">
       <div>
-        <p class="eyebrow">Personal Training</p>
-        <h1>NutFit</h1>
+        <p class="eyebrow">Personal Fitness App</p>
+        <h1 id="appBrandTitle">MyFit Coach</h1>
       </div>
       <div class="profile-pill" id="profileShortcut" role="button" tabindex="0">
         <span id="headerProfileName">User</span>
@@ -41,6 +41,15 @@
             <span id="scoreLabel">Ready</span>
           </div>
         </div>
+
+        <article class="setup-card" id="setupPrompt">
+          <div>
+            <p class="eyebrow">Start Here</p>
+            <h3>Set up your profile</h3>
+            <p>Add name, age, height, weight, BMI, and choose your training program.</p>
+          </div>
+          <button class="primary-button" data-page="profile" type="button">Setup Profile</button>
+        </article>
 
         <div class="stats-grid">
           <article class="stat-card">

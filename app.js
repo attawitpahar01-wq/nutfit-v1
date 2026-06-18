@@ -73,10 +73,9 @@ const profileInputs = ["Name", "Age", "Gender", "Height", "Weight", "Goal", "Pro
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#dateInput").value = formatDate(new Date());
-  const needsProfileSetup = !localStorage.getItem(PROFILE_KEY);
   populateProfileForm();
   render();
-  if (needsProfileSetup) showPage("profile");
+  if (!isProfileComplete(profile)) showPage("profile");
   registerServiceWorker();
 });
 
@@ -215,6 +214,17 @@ function saveProfile() {
   localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
 }
 
+function isProfileComplete(data) {
+  return Boolean(
+    data
+    && data.name
+    && data.name !== "User"
+    && Number(data.age) > 0
+    && Number(data.height) > 0
+    && Number(data.weight) > 0
+  );
+}
+
 function loadPlan() {
   const stored = localStorage.getItem(PLAN_KEY);
   if (!stored) return defaultWeeklyPlan.map((item) => ({ ...item }));
@@ -337,10 +347,13 @@ function toggleDistanceField() {
 
 function renderProfile() {
   const bmi = calculateBmi(profile.height, profile.weight);
-  document.querySelector("#headerProfileName").textContent = profile.name || "User";
+  const isComplete = isProfileComplete(profile);
+  document.querySelector("#appBrandTitle").textContent = isComplete ? `${profile.name} Fit` : "MyFit Coach";
+  document.querySelector("#headerProfileName").textContent = isComplete ? profile.name : "Setup";
   document.querySelector("#headerProfileAge").textContent = profile.age ? `${profile.age}` : "-";
   document.querySelector("#dashboardBmi").textContent = bmi ? `${bmi.toFixed(1)} ${bmiCategoryShort(bmi)}` : "Setup";
   document.querySelector("#dashboardProgram").textContent = profile.program || "Balanced Fitness";
+  document.querySelector("#setupPrompt").classList.toggle("hidden", isComplete);
 }
 
 function renderPlanEditor() {

@@ -1,7 +1,7 @@
 {
-  "name": "NutFit V1",
-  "short_name": "NutFit",
-  "description": "Personal running and sport training tracker for Nut.",
+  "name": "MyFit Coach",
+  "short_name": "MyFit",
+  "description": "Personalized running and sport training tracker.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

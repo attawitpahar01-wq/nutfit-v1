@@ -1,4 +1,4 @@
-const CACHE_NAME = "nutfit-v1-cache-1";
+const CACHE_NAME = "myfit-coach-cache-3";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -28,12 +28,12 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) =>
-      cached || fetch(event.request).then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return response;
-      }).catch(() => caches.match("./index.html"))
+    fetch(event.request).then((response) => {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+      return response;
+    }).catch(() =>
+      caches.match(event.request).then((cached) => cached || caches.match("./index.html"))
     )
   );
 });
