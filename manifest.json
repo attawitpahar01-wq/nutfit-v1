@@ -1,0 +1,19 @@
+{
+  "name": "NutFit V1",
+  "short_name": "NutFit",
+  "description": "Personal running and sport training tracker for Nut.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050b09",
+  "theme_color": "#07110d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

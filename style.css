@@ -433,6 +433,35 @@ textarea {
   box-shadow: 0 16px 36px rgba(41, 242, 139, 0.18);
 }
 
+.backup-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.secondary-button {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+    rgba(13, 25, 21, 0.86);
+  color: var(--text);
+  font-weight: 850;
+  box-shadow: var(--inner-glow);
+}
+
+.secondary-button:active {
+  transform: translateY(1px);
+}
+
+.helper-text {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .bar-chart {
   display: grid;
   grid-template-columns: repeat(7, 1fr);

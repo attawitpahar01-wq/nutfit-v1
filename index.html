@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07110d">
   <title>NutFit V1</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -80,6 +82,19 @@
         <article class="card">
           <h3>Recent Workouts</h3>
           <div id="recentWorkouts" class="workout-list"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-title-row">
+            <h3>Data Backup</h3>
+            <span>Local only</span>
+          </div>
+          <div class="backup-actions">
+            <button class="secondary-button" id="exportDataBtn" type="button">Export JSON</button>
+            <button class="secondary-button" id="importDataBtn" type="button">Import JSON</button>
+            <input id="importFileInput" type="file" accept="application/json,.json" hidden>
+          </div>
+          <p class="helper-text">Use backup before changing phones, clearing browser data, or reinstalling the app.</p>
         </article>
       </section>
 

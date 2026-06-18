@@ -60,10 +60,12 @@ const distanceField = document.querySelector("#distanceField");
 const distanceInput = document.querySelector("#distanceInput");
 const feelingInput = document.querySelector("#feelingInput");
 const feelingValue = document.querySelector("#feelingValue");
+const importFileInput = document.querySelector("#importFileInput");
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#dateInput").value = formatDate(new Date());
   render();
+  registerServiceWorker();
 });
 
 navItems.forEach((button) => {
@@ -104,10 +106,21 @@ workoutForm.addEventListener("submit", (event) => {
 });
 
 document.querySelector("#resetDemoBtn").addEventListener("click", () => {
+  const confirmed = window.confirm("Clear all workouts? This cannot be undone. Export a backup first if you need one.");
+  if (!confirmed) return;
+
   workouts = [];
   saveWorkouts();
   render();
 });
+
+document.querySelector("#exportDataBtn").addEventListener("click", exportWorkoutData);
+
+document.querySelector("#importDataBtn").addEventListener("click", () => {
+  importFileInput.click();
+});
+
+importFileInput.addEventListener("change", importWorkoutData);
 
 function loadWorkouts() {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -126,6 +139,55 @@ function loadWorkouts() {
 
 function saveWorkouts() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+}
+
+function exportWorkoutData() {
+  const payload = {
+    app: "NutFit V1",
+    exportedAt: new Date().toISOString(),
+    version: 1,
+    workouts
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `nutfit-backup-${formatDate(new Date())}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importWorkoutData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      const importedWorkouts = Array.isArray(parsed) ? parsed : parsed.workouts;
+
+      if (!Array.isArray(importedWorkouts) || !importedWorkouts.every(isValidWorkout)) {
+        window.alert("Import failed. Please choose a valid NutFit backup JSON file.");
+        return;
+      }
+
+      const confirmed = window.confirm(`Import ${importedWorkouts.length} workouts? This will replace your current data.`);
+      if (!confirmed) return;
+
+      workouts = importedWorkouts.map(normalizeWorkout);
+      saveWorkouts();
+      render();
+      showPage("dashboard");
+    } catch {
+      window.alert("Import failed. The selected file is not valid JSON.");
+    } finally {
+      importFileInput.value = "";
+    }
+  };
+  reader.readAsText(file);
 }
 
 function render() {
@@ -334,6 +396,36 @@ function deleteWorkout(id) {
   workouts = workouts.filter((workout) => workout.id !== id);
   saveWorkouts();
   render();
+}
+
+function isValidWorkout(workout) {
+  return workout
+    && typeof workout === "object"
+    && typeof workout.date === "string"
+    && typeof workout.type === "string"
+    && Number.isFinite(Number(workout.duration));
+}
+
+function normalizeWorkout(workout) {
+  return {
+    id: workout.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())),
+    date: workout.date,
+    type: typeLabels[workout.type] ? workout.type : "Run",
+    duration: Number(workout.duration || 0),
+    distance: Number(workout.distance || 0),
+    intensity: intensityLabels[workout.intensity] ? workout.intensity : "Easy",
+    feeling: Math.min(5, Math.max(1, Number(workout.feeling || 3))),
+    injury: String(workout.injury || ""),
+    remark: String(workout.remark || "")
+  };
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+
+  navigator.serviceWorker.register("./sw.js").catch(() => {
+    // The app still works without offline caching, so keep this silent for users.
+  });
 }
 
 function getCurrentWeekWorkouts() {
