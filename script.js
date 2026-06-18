@@ -393,18 +393,49 @@ function renderDashboard() {
   $(".score-ring").style.setProperty("--score", `${score}%`);
   $("#weeklyLoad").textContent = Math.round(load);
   $("#loadStatus").textContent = loadStatusLabels[loadStatus] || loadStatus;
+  $("#heroLoadChip").textContent = `โหลด ${Math.round(load)}`;
+  $("#heroRecoveryChip").textContent = recoveryStatusLabels[recovery.status] || recovery.status;
   $("#weeklyDistance").textContent = `${runDistance.toFixed(1)} km`;
   $("#weeklyWorkouts").textContent = week.length;
   $("#weeklyDuration").textContent = `${duration} min`;
   $("#averageRpe").textContent = avgRpe ? avgRpe.toFixed(1) : "-";
   $("#recoveryStatusBadge").textContent = recoveryStatusLabels[recovery.status] || recovery.status;
   $("#recoveryMessage").textContent = recovery.message;
+  renderDashboardInsight(load, avgRpe, doneDays, targetDays, recovery);
   $("#weeklyProgressText").textContent = `${doneDays} / ${targetDays} days`;
   $("#weeklyProgressBar").style.width = `${progress}%`;
 
   renderTodayAndNextWorkout();
   renderWorkoutCollection("#recentWorkouts", state.workouts.slice(0, 4), false);
   renderLoadSignals(week, previousWeek, load, avgRpe);
+}
+
+function renderDashboardInsight(load, avgRpe, doneDays, targetDays, recovery) {
+  let title = "เริ่มต้นสัปดาห์นี้";
+  let text = "บันทึก Workout เพื่อให้ระบบวิเคราะห์แนวโน้มและให้คำแนะนำที่ตรงขึ้น";
+
+  if (recovery.status === "Overloaded") {
+    title = "ร่างกายอาจล้าสะสม";
+    text = "โหลดหรือ RPE สูงกว่าปกติ วันนี้ควรเลือก Recovery หรือ Mobility มากกว่าซ้อมหนัก";
+  } else if (doneDays >= targetDays) {
+    title = "ทำครบเป้าหมายแล้ว";
+    text = "สัปดาห์นี้คุณทำได้ตามเป้าแล้ว รักษาความสม่ำเสมอและให้ร่างกายฟื้นตัว";
+  } else if (targetDays - doneDays === 1) {
+    title = "อีกนิดเดียวถึงเป้า";
+    text = "เหลืออีก 1 วันซ้อมก็ครบเป้าหมาย ลองเลือกกิจกรรมเบาถึงปานกลาง";
+  } else if (load >= 81) {
+    title = "โหลดกำลังพัฒนา";
+    text = "สัปดาห์นี้เริ่มมีคุณภาพแล้ว อย่าลืมวางวันเบาเพื่อให้ร่างกายซึมซับการซ้อม";
+  } else if (load >= 41) {
+    title = "โหลดสมดุลดี";
+    text = "จังหวะการซ้อมกำลังดี สามารถเดินตามแผนและคุม RPE ให้อยู่ในระดับเหมาะสม";
+  } else if (avgRpe && avgRpe <= 5) {
+    title = "พร้อมเพิ่มความต่อเนื่อง";
+    text = "RPE ยังไม่สูงมาก เหมาะกับการเพิ่ม Easy Session เพื่อสร้างความสม่ำเสมอ";
+  }
+
+  $("#dashboardInsightTitle").textContent = title;
+  $("#dashboardInsightText").textContent = text;
 }
 
 function renderTodayAndNextWorkout() {

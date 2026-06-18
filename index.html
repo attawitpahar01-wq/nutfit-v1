@@ -35,8 +35,13 @@
 
         <div class="hero-card">
           <div>
+            <span class="hero-kicker">Weekly Performance</span>
             <p>คะแนนการซ้อม</p>
             <strong id="trainingScore">0</strong>
+            <div class="hero-chip-row">
+              <span id="heroLoadChip">โหลด 0</span>
+              <span id="heroRecoveryChip">พร้อมซ้อม</span>
+            </div>
           </div>
           <div class="score-ring">
             <span id="scoreLabel">Start</span>
@@ -54,30 +59,45 @@
 
         <div class="stats-grid">
           <article class="stat-card">
+            <i>⚡</i>
             <span>โหลดสัปดาห์นี้</span>
             <strong id="weeklyLoad">0</strong>
           </article>
           <article class="stat-card">
+            <i>◉</i>
             <span>สถานะโหลด</span>
             <strong id="loadStatus">Light</strong>
           </article>
           <article class="stat-card">
+            <i>↗</i>
             <span>ระยะวิ่งรวม</span>
             <strong id="weeklyDistance">0 km</strong>
           </article>
           <article class="stat-card">
+            <i>▦</i>
             <span>จำนวนครั้งที่ซ้อม</span>
             <strong id="weeklyWorkouts">0</strong>
           </article>
           <article class="stat-card">
+            <i>◷</i>
             <span>เวลารวม</span>
             <strong id="weeklyDuration">0 min</strong>
           </article>
           <article class="stat-card">
+            <i>◇</i>
             <span>RPE เฉลี่ย</span>
             <strong id="averageRpe">-</strong>
           </article>
         </div>
+
+        <article class="dashboard-insight-card">
+          <div>
+            <span>Coach Insight</span>
+            <strong id="dashboardInsightTitle">เริ่มต้นสัปดาห์นี้</strong>
+            <p id="dashboardInsightText">บันทึก Workout เพื่อให้ระบบวิเคราะห์แนวโน้มและให้คำแนะนำที่ตรงขึ้น</p>
+          </div>
+          <button class="small-link-button" data-page="coach" type="button">ดูโค้ช</button>
+        </article>
 
         <article class="card status-card">
           <div class="card-title-row">
