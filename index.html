@@ -306,10 +306,15 @@
               <input id="coachWebAppUrlInput" type="url" placeholder="https://script.google.com/macros/s/.../exec">
             </label>
 
+            <label>
+              LIFF ID
+              <input id="liffIdInput" type="text" placeholder="2000000000-xxxxxxxx">
+            </label>
+
             <div class="field-row">
               <label>
-                LINE User ID
-                <input id="lineUserIdInput" type="text" placeholder="Uxxxxxxxxxxxxxxxx">
+                LINE User ID จาก LIFF
+                <input id="lineUserIdInput" type="text" placeholder="Uxxxxxxxxxxxxxxxx" readonly>
               </label>
               <label>
                 LINE Display Name
@@ -340,10 +345,13 @@
             </div>
 
             <div class="backup-actions">
+              <button class="secondary-button" id="lineLoginBtn" type="button">เปิด LINE Login</button>
               <button class="secondary-button" id="detectLineProfileBtn" type="button">ดึงข้อมูล LINE</button>
+            </div>
+            <div class="backup-actions">
               <button class="secondary-button" id="registerLineCoachBtn" type="button">ลงทะเบียน Coach</button>
             </div>
-            <p class="helper-text" id="lineCoachStatusText">ถ้าเปิดผ่าน LIFF ระบบจะดึง LINE profile ได้เอง ถ้าเปิดจาก browser ให้กรอก LINE User ID เพื่อทดสอบ MVP</p>
+            <p class="helper-text" id="lineCoachStatusText">ใส่ LIFF ID แล้วกดเปิด LINE Login เพื่อให้ระบบดึง LINE userId จริงที่ขึ้นต้นด้วย U</p>
           </div>
 
           <button class="primary-button" type="submit">บันทึกข้อมูลนักกีฬา</button>

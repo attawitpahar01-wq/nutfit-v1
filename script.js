@@ -185,6 +185,7 @@ function bindEvents() {
   $("#removeAvatarBtn").addEventListener("click", removeAvatar);
   $("#avatarInput").addEventListener("change", handleAvatarUpload);
   $("#detectLineProfileBtn").addEventListener("click", detectLineProfile);
+  $("#lineLoginBtn").addEventListener("click", startLineLogin);
   $("#registerLineCoachBtn").addEventListener("click", registerLineCoach);
 }
 
@@ -397,6 +398,7 @@ function renderLineCoach() {
   const coach = state.lineCoach;
 
   $("#coachWebAppUrlInput").value = coach.webAppUrl || "";
+  $("#liffIdInput").value = coach.liffId || "";
   $("#lineUserIdInput").value = coach.userId || "";
   $("#lineDisplayNameInput").value = coach.displayName || "";
   $("#proteinTargetInput").value = coach.proteinTarget || "";
@@ -417,7 +419,7 @@ async function initializeLineCoach() {
   applyLineCoachQueryParams();
 
   if (!state.lineCoach.liffId || !window.liff) {
-    renderLineCoachStatus("พร้อมตั้งค่า LINE Coach แบบ manual");
+    renderLineCoachStatus("ใส่ LIFF ID แล้วกดเปิด LINE Login เพื่อดึง userId จริงจาก LINE");
     return;
   }
 
@@ -425,7 +427,7 @@ async function initializeLineCoach() {
     await liff.init({ liffId: state.lineCoach.liffId });
 
     if (!liff.isLoggedIn()) {
-      renderLineCoachStatus("ยังไม่ได้ login LINE ผ่าน LIFF");
+      renderLineCoachStatus("พร้อม login ผ่าน LINE แล้ว");
       return;
     }
 
@@ -450,14 +452,14 @@ async function detectLineProfile() {
   saveLineCoachDraftFromInputs();
 
   if (!window.liff || !state.lineCoach.liffId) {
-    renderLineCoachStatus("ยังไม่ได้ตั้ง LIFF ID ให้กรอก LINE User ID เองเพื่อทดสอบได้");
+    renderLineCoachStatus("กรุณาใส่ LIFF ID ก่อน แล้วกดเปิด LINE Login");
     renderLineCoach();
     return;
   }
 
   try {
     if (!liff.isLoggedIn()) {
-      liff.login();
+      startLineLogin();
       return;
     }
 
@@ -474,6 +476,34 @@ async function detectLineProfile() {
   }
 }
 
+async function startLineLogin() {
+  saveLineCoachDraftFromInputs();
+
+  if (!state.lineCoach.liffId) {
+    renderLineCoachStatus("กรุณาใส่ LIFF ID ก่อน");
+    $("#liffIdInput").focus();
+    return;
+  }
+
+  if (!window.liff) {
+    renderLineCoachStatus("โหลด LIFF SDK ไม่สำเร็จ กรุณาเปิดผ่าน https หรือเช็ค internet");
+    return;
+  }
+
+  try {
+    await liff.init({ liffId: state.lineCoach.liffId });
+
+    if (!liff.isLoggedIn()) {
+      liff.login({ redirectUri: window.location.href });
+      return;
+    }
+
+    await detectLineProfile();
+  } catch (error) {
+    renderLineCoachStatus("เปิด LINE Login ไม่สำเร็จ: " + error.message);
+  }
+}
+
 async function registerLineCoach() {
   saveLineCoachDraftFromInputs();
 
@@ -484,8 +514,14 @@ async function registerLineCoach() {
   }
 
   if (!state.lineCoach.userId) {
-    renderLineCoachStatus("กรุณาใส่ LINE User ID หรือกดดึงข้อมูล LINE ผ่าน LIFF");
-    $("#lineUserIdInput").focus();
+    renderLineCoachStatus("กรุณากดเปิด LINE Login แล้วดึงข้อมูล LINE ก่อน");
+    $("#liffIdInput").focus();
+    return;
+  }
+
+  if (!isValidLineUserId(state.lineCoach.userId)) {
+    renderLineCoachStatus("LINE User ID ยังไม่ถูกต้อง ต้องได้จาก LIFF และขึ้นต้นด้วย U");
+    $("#liffIdInput").focus();
     return;
   }
 
@@ -535,6 +571,7 @@ function saveLineCoachDraftFromInputs() {
   state.lineCoach = {
     ...state.lineCoach,
     webAppUrl: $("#coachWebAppUrlInput").value.trim(),
+    liffId: $("#liffIdInput").value.trim(),
     userId: $("#lineUserIdInput").value.trim(),
     displayName: $("#lineDisplayNameInput").value.trim(),
     proteinTarget: Number($("#proteinTargetInput").value || 0),
@@ -544,6 +581,10 @@ function saveLineCoachDraftFromInputs() {
   };
 
   persist();
+}
+
+function isValidLineUserId(userId) {
+  return /^U[a-f0-9]{20,}$/i.test(String(userId || "").trim());
 }
 
 function renderLineCoachStatus(message) {
