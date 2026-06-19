@@ -292,6 +292,60 @@
             <div id="recommendationTags" class="recommendation-tags"></div>
           </div>
 
+          <div class="line-coach-panel">
+            <div class="card-title-row">
+              <div>
+                <span class="panel-kicker">LINE Daily Coach</span>
+                <h3>เชื่อม NutFix Coach</h3>
+              </div>
+              <span id="lineCoachBadge" class="badge">Offline</span>
+            </div>
+
+            <label>
+              Apps Script Web App URL
+              <input id="coachWebAppUrlInput" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+            </label>
+
+            <div class="field-row">
+              <label>
+                LINE User ID
+                <input id="lineUserIdInput" type="text" placeholder="Uxxxxxxxxxxxxxxxx">
+              </label>
+              <label>
+                LINE Display Name
+                <input id="lineDisplayNameInput" type="text" placeholder="Nut">
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                โปรตีนต่อวัน
+                <input id="proteinTargetInput" type="number" min="0" inputmode="decimal" placeholder="100">
+              </label>
+              <label>
+                น้ำต่อวัน
+                <input id="waterTargetInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="2">
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                ก้าวต่อวัน
+                <input id="stepTargetInput" type="number" min="0" inputmode="numeric" placeholder="6000">
+              </label>
+              <label>
+                นอนต่อคืน
+                <input id="sleepTargetInput" type="number" min="0" step="0.5" inputmode="decimal" placeholder="7">
+              </label>
+            </div>
+
+            <div class="backup-actions">
+              <button class="secondary-button" id="detectLineProfileBtn" type="button">ดึงข้อมูล LINE</button>
+              <button class="secondary-button" id="registerLineCoachBtn" type="button">ลงทะเบียน Coach</button>
+            </div>
+            <p class="helper-text" id="lineCoachStatusText">ถ้าเปิดผ่าน LIFF ระบบจะดึง LINE profile ได้เอง ถ้าเปิดจาก browser ให้กรอก LINE User ID เพื่อทดสอบ MVP</p>
+          </div>
+
           <button class="primary-button" type="submit">บันทึกข้อมูลนักกีฬา</button>
         </form>
       </section>
@@ -520,6 +574,7 @@
     </aside>
   </div>
 
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

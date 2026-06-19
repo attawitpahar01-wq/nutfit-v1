@@ -3,12 +3,18 @@
 
 const STORAGE_KEYS = {
   userProfile: "userProfile",
+  lineCoach: "lineCoach",
   workouts: "workouts",
   weeklyPlan: "weeklyPlan",
   personalRecords: "personalRecords",
   coachRecommendations: "coachRecommendations",
   coachNudge: "coachNudge",
   coachNudgeDismissed: "coachNudgeDismissed"
+};
+
+const INTEGRATION_CONFIG = {
+  appsScriptWebAppUrl: "",
+  liffId: ""
 };
 
 const legacyKeys = {
@@ -126,7 +132,8 @@ const state = {
   recommendedPlan: [],
   personalRecords: {},
   coachRecommendations: [],
-  coachNudge: null
+  coachNudge: null,
+  lineCoach: loadLineCoach()
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -135,6 +142,7 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 document.addEventListener("DOMContentLoaded", () => {
   $("#dateInput").value = formatDate(new Date());
   bindEvents();
+  initializeLineCoach();
   render();
   if (!isProfileComplete(state.userProfile)) showPage("profile");
   registerServiceWorker();
@@ -176,6 +184,8 @@ function bindEvents() {
   $("#chooseAvatarBtn").addEventListener("click", () => $("#avatarInput").click());
   $("#removeAvatarBtn").addEventListener("click", removeAvatar);
   $("#avatarInput").addEventListener("change", handleAvatarUpload);
+  $("#detectLineProfileBtn").addEventListener("click", detectLineProfile);
+  $("#registerLineCoachBtn").addEventListener("click", registerLineCoach);
 }
 
 function loadProfile() {
@@ -220,6 +230,22 @@ function loadWeeklyPlan() {
   return emptyWeeklyPlan.map((item) => ({ ...item }));
 }
 
+function loadLineCoach() {
+  const stored = readJson(STORAGE_KEYS.lineCoach) || {};
+  return {
+    webAppUrl: stored.webAppUrl || INTEGRATION_CONFIG.appsScriptWebAppUrl,
+    liffId: stored.liffId || INTEGRATION_CONFIG.liffId,
+    userId: stored.userId || "",
+    displayName: stored.displayName || "",
+    proteinTarget: stored.proteinTarget || 100,
+    waterTarget: stored.waterTarget || 2,
+    stepTarget: stored.stepTarget || 6000,
+    sleepTarget: stored.sleepTarget || 7,
+    registered: Boolean(stored.registered),
+    lastSyncedAt: stored.lastSyncedAt || ""
+  };
+}
+
 function readJson(key) {
   try {
     const value = localStorage.getItem(key);
@@ -236,6 +262,7 @@ function persist() {
   localStorage.setItem(STORAGE_KEYS.userProfile, JSON.stringify(state.userProfile));
   localStorage.setItem(STORAGE_KEYS.workouts, JSON.stringify(state.workouts));
   localStorage.setItem(STORAGE_KEYS.weeklyPlan, JSON.stringify(state.weeklyPlan));
+  localStorage.setItem(STORAGE_KEYS.lineCoach, JSON.stringify(state.lineCoach));
   localStorage.setItem(STORAGE_KEYS.personalRecords, JSON.stringify(state.personalRecords));
   localStorage.setItem(STORAGE_KEYS.coachRecommendations, JSON.stringify(state.coachRecommendations));
   localStorage.setItem(STORAGE_KEYS.coachNudge, JSON.stringify(state.coachNudge));
@@ -273,6 +300,8 @@ function saveProfileFromForm(event) {
     $("#profileGoalDetailInput").focus();
     return;
   }
+  saveLineCoachDraftFromInputs();
+
   state.userProfile = {
     ...state.userProfile,
     name: $("#profileNameInput").value.trim() || "Athlete",
@@ -358,9 +387,171 @@ function renderProfile() {
   $("#profileTrainingDaysInput").value = profile.weeklyTrainingDays || 5;
   $("#profileRestDayInput").value = profile.preferredRestDay || "Thursday";
   $("#profileProgramInput").value = profile.program || "Balanced Fitness";
+  renderLineCoach();
   updateGoalDetailRequirement();
   renderAvatar();
   renderProfileGuidance();
+}
+
+function renderLineCoach() {
+  const coach = state.lineCoach;
+
+  $("#coachWebAppUrlInput").value = coach.webAppUrl || "";
+  $("#lineUserIdInput").value = coach.userId || "";
+  $("#lineDisplayNameInput").value = coach.displayName || "";
+  $("#proteinTargetInput").value = coach.proteinTarget || "";
+  $("#waterTargetInput").value = coach.waterTarget || "";
+  $("#stepTargetInput").value = coach.stepTarget || "";
+  $("#sleepTargetInput").value = coach.sleepTarget || "";
+
+  const connected = Boolean(coach.registered && coach.userId);
+  $("#lineCoachBadge").textContent = connected ? "Connected" : "Offline";
+  $("#lineCoachBadge").classList.toggle("connected", connected);
+
+  if (connected) {
+    $("#lineCoachStatusText").textContent = `เชื่อม Daily Coach แล้ว${coach.lastSyncedAt ? ` อัปเดตล่าสุด ${coach.lastSyncedAt}` : ""}`;
+  }
+}
+
+async function initializeLineCoach() {
+  applyLineCoachQueryParams();
+
+  if (!state.lineCoach.liffId || !window.liff) {
+    renderLineCoachStatus("พร้อมตั้งค่า LINE Coach แบบ manual");
+    return;
+  }
+
+  try {
+    await liff.init({ liffId: state.lineCoach.liffId });
+
+    if (!liff.isLoggedIn()) {
+      renderLineCoachStatus("ยังไม่ได้ login LINE ผ่าน LIFF");
+      return;
+    }
+
+    await detectLineProfile();
+  } catch (error) {
+    renderLineCoachStatus("เชื่อม LIFF ไม่สำเร็จ: " + error.message);
+  }
+}
+
+function applyLineCoachQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  const webAppUrl = params.get("gasUrl") || params.get("webAppUrl");
+  const liffId = params.get("liffId");
+  const userId = params.get("lineUserId") || params.get("userId");
+
+  if (webAppUrl) state.lineCoach.webAppUrl = webAppUrl;
+  if (liffId) state.lineCoach.liffId = liffId;
+  if (userId) state.lineCoach.userId = userId;
+}
+
+async function detectLineProfile() {
+  saveLineCoachDraftFromInputs();
+
+  if (!window.liff || !state.lineCoach.liffId) {
+    renderLineCoachStatus("ยังไม่ได้ตั้ง LIFF ID ให้กรอก LINE User ID เองเพื่อทดสอบได้");
+    renderLineCoach();
+    return;
+  }
+
+  try {
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+
+    const profile = await liff.getProfile();
+    state.lineCoach.userId = profile.userId || state.lineCoach.userId;
+    state.lineCoach.displayName = profile.displayName || state.lineCoach.displayName;
+    state.userProfile.name = state.userProfile.name || profile.displayName || "";
+
+    persist();
+    renderLineCoach();
+    renderLineCoachStatus("ดึงข้อมูล LINE profile สำเร็จ");
+  } catch (error) {
+    renderLineCoachStatus("ดึง LINE profile ไม่สำเร็จ: " + error.message);
+  }
+}
+
+async function registerLineCoach() {
+  saveLineCoachDraftFromInputs();
+
+  if (!state.lineCoach.webAppUrl) {
+    renderLineCoachStatus("กรุณาใส่ Apps Script Web App URL ก่อน");
+    $("#coachWebAppUrlInput").focus();
+    return;
+  }
+
+  if (!state.lineCoach.userId) {
+    renderLineCoachStatus("กรุณาใส่ LINE User ID หรือกดดึงข้อมูล LINE ผ่าน LIFF");
+    $("#lineUserIdInput").focus();
+    return;
+  }
+
+  const payload = {
+    action: "registerUser",
+    userId: state.lineCoach.userId,
+    displayName: state.lineCoach.displayName,
+    name: $("#profileNameInput").value.trim() || state.userProfile.name,
+    goal: $("#profileGoalDetailInput").value.trim() || $("#profileGoalCategoryInput").value,
+    weight: Number($("#profileWeightInput").value || state.userProfile.weight || 0),
+    proteinTarget: Number(state.lineCoach.proteinTarget || 0),
+    waterTarget: Number(state.lineCoach.waterTarget || 0),
+    stepTarget: Number(state.lineCoach.stepTarget || 0),
+    sleepTarget: Number(state.lineCoach.sleepTarget || 0)
+  };
+
+  $("#registerLineCoachBtn").disabled = true;
+  renderLineCoachStatus("กำลังลงทะเบียน Daily Coach...");
+
+  try {
+    await fetch(state.lineCoach.webAppUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    state.lineCoach.registered = true;
+    state.lineCoach.lastSyncedAt = new Date().toLocaleString("th-TH", {
+      dateStyle: "short",
+      timeStyle: "short"
+    });
+
+    persist();
+    renderLineCoach();
+    renderLineCoachStatus("ส่งข้อมูลลงทะเบียนแล้ว ตรวจชีต Users ใน Google Sheet ได้เลย");
+  } catch (error) {
+    renderLineCoachStatus("ลงทะเบียนไม่สำเร็จ: " + error.message);
+  } finally {
+    $("#registerLineCoachBtn").disabled = false;
+  }
+}
+
+function saveLineCoachDraftFromInputs() {
+  state.lineCoach = {
+    ...state.lineCoach,
+    webAppUrl: $("#coachWebAppUrlInput").value.trim(),
+    userId: $("#lineUserIdInput").value.trim(),
+    displayName: $("#lineDisplayNameInput").value.trim(),
+    proteinTarget: Number($("#proteinTargetInput").value || 0),
+    waterTarget: Number($("#waterTargetInput").value || 0),
+    stepTarget: Number($("#stepTargetInput").value || 0),
+    sleepTarget: Number($("#sleepTargetInput").value || 0)
+  };
+
+  persist();
+}
+
+function renderLineCoachStatus(message) {
+  const status = $("#lineCoachStatusText");
+
+  if (status) {
+    status.textContent = message;
+  }
 }
 
 function renderAvatar() {
@@ -1026,6 +1217,7 @@ function exportData() {
     userProfile: state.userProfile,
     workouts: state.workouts,
     weeklyPlan: state.weeklyPlan,
+    lineCoach: state.lineCoach,
     personalRecords: state.personalRecords,
     coachRecommendations: state.coachRecommendations
   };
@@ -1052,6 +1244,7 @@ function importData(event) {
       state.userProfile = normalizeProfile({ ...defaultProfile, ...(parsed.userProfile || parsed.profile || {}) });
       state.workouts = parsed.workouts.map(normalizeWorkout);
       state.weeklyPlan = Array.isArray(parsed.weeklyPlan) ? parsed.weeklyPlan.map(normalizePlanItem) : emptyWeeklyPlan.map((item) => ({ ...item }));
+      state.lineCoach = { ...loadLineCoach(), ...(parsed.lineCoach || {}) };
       render();
       showPage("dashboard");
     } catch {

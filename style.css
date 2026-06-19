@@ -712,6 +712,35 @@ h3 {
   gap: 14px;
 }
 
+.line-coach-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 2px;
+  padding: 16px;
+  border: 1px solid rgba(40, 224, 127, 0.22);
+  border-radius: 18px;
+  background:
+    linear-gradient(160deg, rgba(41, 242, 139, 0.11), rgba(69, 173, 255, 0.045)),
+    rgba(13, 25, 21, 0.8);
+  box-shadow: var(--inner-glow);
+}
+
+.line-coach-panel h3 {
+  margin: 2px 0 0;
+}
+
+.panel-kicker {
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.badge.connected {
+  border-color: rgba(41, 242, 139, 0.5);
+  background: rgba(41, 242, 139, 0.12);
+  color: var(--green);
+}
+
 label {
   display: grid;
   gap: 8px;
@@ -790,6 +819,12 @@ textarea {
   color: var(--text);
   font-weight: 850;
   box-shadow: var(--inner-glow);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: wait;
+  opacity: 0.62;
 }
 
 .small-link-button {
