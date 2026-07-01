@@ -1,5 +1,8 @@
-// NutFit V2 - static mobile web app.
+// LifeFit Coach - static mobile web app.
 // Data is stored locally so the app can run on GitHub Pages without a backend.
+
+const APP_NAME = "LifeFit Coach";
+const APP_BACKUP_PREFIX = "lifefit-coach";
 
 const STORAGE_KEYS = {
   userProfile: "userProfile",
@@ -371,7 +374,7 @@ function renderProfile() {
   const profile = state.userProfile;
   const bmi = calculateBmi(profile.height, profile.weight);
   const complete = isProfileComplete(profile);
-  $("#appBrandTitle").textContent = complete ? `${profile.name} Fit` : "NutFit V2";
+  $("#appBrandTitle").textContent = APP_NAME;
   $("#headerProfileName").textContent = complete ? profile.name : "Setup";
   $("#headerProfileAge").textContent = profile.age ? String(profile.age) : "-";
   $("#dashboardBmi").textContent = bmi ? `${bmi.toFixed(1)} ${bmiCategoryShort(bmi)}` : "Setup";
@@ -1266,7 +1269,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `nutfit-v2-backup-${formatDate(new Date())}.json`;
+  link.download = `${APP_BACKUP_PREFIX}-backup-${formatDate(new Date())}.json`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -1281,7 +1284,7 @@ function importData(event) {
     try {
       const parsed = JSON.parse(reader.result);
       if (!Array.isArray(parsed.workouts)) throw new Error("Invalid backup");
-      if (!window.confirm("นำเข้าไฟล์สำรองและแทนที่ข้อมูล NutFit V2 ปัจจุบันหรือไม่?")) return;
+      if (!window.confirm("นำเข้าไฟล์สำรองและแทนที่ข้อมูล LifeFit Coach ปัจจุบันหรือไม่?")) return;
       state.userProfile = normalizeProfile({ ...defaultProfile, ...(parsed.userProfile || parsed.profile || {}) });
       state.workouts = parsed.workouts.map(normalizeWorkout);
       state.weeklyPlan = Array.isArray(parsed.weeklyPlan) ? parsed.weeklyPlan.map(normalizePlanItem) : emptyWeeklyPlan.map((item) => ({ ...item }));
@@ -1289,7 +1292,7 @@ function importData(event) {
       render();
       showPage("dashboard");
     } catch {
-      window.alert("นำเข้าไม่สำเร็จ กรุณาเลือกไฟล์สำรอง JSON ของ NutFit ที่ถูกต้อง");
+      window.alert("นำเข้าไม่สำเร็จ กรุณาเลือกไฟล์สำรอง JSON ของ LifeFit Coach ที่ถูกต้อง");
     } finally {
       $("#importFileInput").value = "";
     }

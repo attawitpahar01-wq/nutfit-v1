@@ -1,7 +1,7 @@
 {
-  "name": "NutFit V2",
-  "short_name": "NutFit",
-  "description": "Personal running and multi-sport training coach.",
+  "name": "LifeFit Coach",
+  "short_name": "LifeFit",
+  "description": "Personal running, sport, and daily health coach.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
